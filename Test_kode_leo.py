@@ -1,0 +1,1 @@
+print("fysikk er ahhh")
