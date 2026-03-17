@@ -25,4 +25,4 @@ class GameState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.fill((0, 0, 0))
-        self.draw_text(surface, "Du er i spillet! Trykk ESC for å gå tilbake til hovedmenyen.", self.font, (255, 255, 255), (250, 250))
+        self.draw_text(surface, "Du er i spillet! Trykk ESC for å gå tilbake til hovedmenyen.", self.font, (255, 255, 255), (600, 300))

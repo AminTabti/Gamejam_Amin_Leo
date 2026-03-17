@@ -6,16 +6,19 @@ import pygame
 from states.base_state import BaseState
 from states.menu_state import MenuState
 from states.game_state import GameState
+from states.pause_state import PauseState
 
 class Spill:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((500, 500))
+        pygame.display.set_caption("Smash Bros")
+        self.screen = pygame.display.set_mode((1200, 600))
         self.clock = pygame.time.Clock()
         self.running = True
         self.states = {
             "MENU": MenuState(),
-            "GAME": GameState()
+            "GAME": GameState(),
+            "PAUSE": PauseState()
         }
         self.current_state = self.states["MENU"]
 
@@ -26,9 +29,23 @@ class Spill:
 
     def handle_events(self):
         events = pygame.event.get()
-
         # Events håndteres i staten.
         self.current_state.handle_events(events)
+
+        for event in events:
+            if event.type == pygame.QUIT:
+                self.running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_0:
+                    self.running = False
+                
+                if event.key == pygame.K_p and self.current_state == self.states["GAME"]:
+                    self.current_state = self.states["PAUSE"]
+                
+                if event.key == pygame.K_r:
+                    return "RESTART"
+
 
     def update(self):
         # Tiden siden forrige oppdatering. Nyttig for å gjøre frame-rate independent bevegelse.
@@ -51,6 +68,12 @@ class Spill:
         self.current_state.draw(self.screen)
         pygame.display.flip()
 
-spill = Spill()
-while spill.running:
-    spill.main_loop()
+while True:
+    spill = Spill()
+    while spill.running:
+        if spill.main_loop() == "RESTART":
+            break
+    else:
+        break
+
+pygame.quit()
