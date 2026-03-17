@@ -1,1 +1,0 @@
-print("fysikk er ahhh")
