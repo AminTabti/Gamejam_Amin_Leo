@@ -40,7 +40,7 @@ class Spill:
                 if event.key == pygame.K_0:
                     self.running = False
                 
-                if event.key == pygame.K_p and self.current_state == self.states["GAME"]:
+                if event.key == pygame.K_p:
                     self.current_state = self.states["PAUSE"]
                 
                 if event.key == pygame.K_r:
