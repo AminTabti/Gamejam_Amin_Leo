@@ -8,7 +8,7 @@ import pygame
 class PauseState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("Pause_bakrund.png").convert()
+        self.bakrund_load =  pygame.image.load("Gamejam_Amin_Leo/assets/Pause_bakrund.png").convert()
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
 
     def handle_events(self, events : list[pygame.event.Event]):
