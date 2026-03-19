@@ -8,6 +8,8 @@ import pygame
 class PauseState(BaseState):
     def __init__(self):
         super().__init__()
+        self.bakrund_load =  pygame.image.load("Pause_bakrund.png").convert()
+        self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
 
     def handle_events(self, events : list[pygame.event.Event]):
         for event in events:
@@ -20,6 +22,6 @@ class PauseState(BaseState):
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.fill((0, 0, 0))
+        surface.blit(self.bakrund, (0,0))
         self.draw_text(surface, "game (paused) press p to continiue", 
                        pygame.font.SysFont("Algerian", 40, italic = True), (255, 255, 255), (600, 300))

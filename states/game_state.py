@@ -8,6 +8,8 @@ import pygame
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
+        self.bakrund_load =  pygame.image.load("bakrundsbilde.png").convert()
+        self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
 
     def handle_events(self, events : list[pygame.event.Event]):
         for event in events:
@@ -24,5 +26,5 @@ class GameState(BaseState):
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.fill((0, 0, 0))
-        self.draw_text(surface, "Du er i spillet! Trykk ESC for å gå tilbake til hovedmenyen.", self.font, (255, 255, 255), (600, 300))
+        surface.blit(self.bakrund, (0,0))
+        self.draw_text(surface, "Main gamet her!", self.font, (0, 0, 0), (600, 300))
