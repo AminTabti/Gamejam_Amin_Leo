@@ -19,7 +19,7 @@ class BaseState(ABC):
         """Initialiserer staten."""
         self.done = False
         self.next_state = None
-        self.font = pygame.font.SysFont("Times New Roman", 40, bold = True, italic = True)
+        self.font = pygame.font.SysFont("Times New Roman", 80, bold = True, italic = True)
 
     def draw_text(self, surface : pygame.Surface, string : str, font : pygame.font.Font, color : tuple, center : tuple):
         # Lager tekst. Andre parameter er anti-alias. Sett til True for glatt og fin tekst.

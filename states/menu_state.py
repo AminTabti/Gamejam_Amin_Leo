@@ -17,16 +17,16 @@ class MenuState(BaseState):
             if event.type == pygame.QUIT:
                 self.next_state = None
                 self.done = True
-            
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.next_state = "GAME"
-                    self.done = True
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                         if self.start_box.collidepoint(event.pos):
+                            self.next_state = "GAME"
+                            self.done = True
 
     def update(self, dt: float):
         pass
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        pygame.draw.rect(surface, (255, 0, 0), self.start_box)
-        self.draw_text(surface, "Du er i hovedmenyen! Trykk SPACE for å starte.", self.font, (255, 255, 255), (600, 300))
+        self.draw_text(surface, "Menu", self.font, (0,0, 0), (875, 60))
