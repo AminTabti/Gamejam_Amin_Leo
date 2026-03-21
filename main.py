@@ -21,6 +21,7 @@ class Spill:
             "PAUSE": PauseState()
         }
         self.current_state = self.states["MENU"]
+        self.current_state.start_musikk()
 
     def main_loop(self):
         self.handle_events()
@@ -39,13 +40,6 @@ class Spill:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_0:
                     self.running = False
-                
-                if event.key == pygame.K_p:
-                    self.current_state = self.states["PAUSE"]
-                
-                if event.key == pygame.K_r:
-                    return "RESTART"
-
 
     def update(self):
         # Tiden siden forrige oppdatering. Nyttig for å gjøre frame-rate independent bevegelse.
@@ -58,8 +52,16 @@ class Spill:
         if self.current_state.done:
             next_state = self.current_state.next_state
             self.current_state.done = False
+            
+            if hasattr(self.current_state, "slutt_musikk"):
+                self.current_state.slutt_musikk()
+
             if next_state:
                 self.current_state = self.states[next_state]
+
+                if hasattr(self.current_state, "start_musikk"):
+                    self.current_state.start_musikk()
+
             else:
                 self.running = False
 

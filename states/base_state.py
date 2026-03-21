@@ -21,6 +21,12 @@ class BaseState(ABC):
         self.next_state = None
         self.font = pygame.font.SysFont("Times New Roman", 80, bold = True, italic = True)
 
+    def start_musikk(self):
+        pass
+    
+    def slutt_musikk(self):
+        pass
+
     def draw_text(self, surface : pygame.Surface, string : str, font : pygame.font.Font, color : tuple, center : tuple):
         # Lager tekst. Andre parameter er anti-alias. Sett til True for glatt og fin tekst.
         text = font.render(string, False, color)
