@@ -70,12 +70,9 @@ class Spill:
         self.current_state.draw(self.screen)
         pygame.display.flip()
 
-while True:
-    spill = Spill()
-    while spill.running:
-        if spill.main_loop() == "RESTART":
-            break
-    else:
-        break
+spill = Spill()
+
+while spill.running:
+    spill.main_loop()
 
 pygame.quit()

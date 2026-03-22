@@ -15,11 +15,11 @@ class MenuState(BaseState):
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
 
     def start_musikk(self):
-        a1 = randint(1,3)
+        a1 = randint(1,5)
 
-        if a1 == 1:
+        if a1 <= 2:
             pygame.mixer.music.load("Gamejam_Amin_Leo/assets/menu_music1.mp3")
-        elif a1 == 2:
+        elif a1 <= 4:
             pygame.mixer.music.load("Gamejam_Amin_Leo/assets/menu_music2.mp3")
         else:
             pygame.mixer.music.load("Gamejam_Amin_Leo/assets/menu_music3.mp3")
