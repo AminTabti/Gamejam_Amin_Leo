@@ -8,8 +8,10 @@ import pygame
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("assets/bakrundsbilde.png").convert()
+        self.bakrund_load =  pygame.image.load("assets/battlefield.png").convert()
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
+        self.spill_bane1 = pygame.Rect(225, 550, 750, 50) #x, y, bredde, høyde
+        self.spill_bane2 = pygame.Rect(95, 450, 1000, 100)
 
     def handle_events(self, events : list[pygame.event.Event]):
         for event in events:
@@ -32,4 +34,7 @@ class GameState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        self.draw_text(surface, "Main gamet her!", self.font, (0, 0, 0), (600, 300))
+        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
+        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
+
+        #self.draw_text(surface, "Main gamet her!", self.font, (0, 0, 0), (600, 300))
