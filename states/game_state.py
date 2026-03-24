@@ -4,7 +4,7 @@ Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc
 
 from states.base_state import BaseState
 import pygame
-
+from random import randint
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
@@ -22,7 +22,7 @@ class GameState(BaseState):
 
         self.player2 = Player(800, 300, self, kontroller={
         "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, farge=(200, 60, 30))
-    #-------Chat over--------------------------
+    #----------Chat over------------------------
 
 
     def handle_events(self, events : list[pygame.event.Event]):
@@ -39,6 +39,17 @@ class GameState(BaseState):
                 if event.key == pygame.K_p:
                     self.next_state = "PAUSE"
                     self.done = True
+    def start_musikk(self):
+        a1 = randint(1,5)
+
+        if a1 <= 2:
+            pygame.mixer.music.load("assets/menu_music1.mp3")
+        elif a1 <= 4:
+            pygame.mixer.music.load("assets/menu_music2.mp3")
+        else:
+            pygame.mixer.music.load("assets/menu_music3.mp3")
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
 
 
     def update(self, dt: float):
@@ -56,6 +67,9 @@ class GameObject:
     def __init__(self, x, y, width, height, farge):
         self.rect = pygame.Rect(x, y, width, height)
         self.farge = farge
+        self.x = x
+        self.y = y
+
         
     def update(self):
         pass
@@ -68,6 +82,7 @@ class Player(GameObject):
     def __init__(self, x, y, game, kontroller, farge):
         super().__init__(x, y, 50, 50, (30,60,200))
         self.speed = 9
+        self.vy = 0
         self.game = game
         self.kontroller = kontroller
     
@@ -75,6 +90,8 @@ class Player(GameObject):
         pygame.draw.rect(screen, self.farge, self.rect)
 
     def update(self):
+        self.vy += 0.0981
+        self.rect.y += self.vy
         keys = pygame.key.get_pressed()
         #---------Chat under ---------
         if keys[self.kontroller["left"]]:
@@ -85,4 +102,11 @@ class Player(GameObject):
             self.rect.y -= self.speed
         if keys[self.kontroller["down"]]:
             self.rect.y += self.speed
-        #-------- Chat over --------- 
+        #-------- Chat over ---------
+
+        if self.rect.colliderect(self.game.spill_bane1):
+            self.rect.bottom = self.game.spill_bane1.top
+            self.vy = 0
+        if self.rect.colliderect(self.game.spill_bane2):
+            self.rect.bottom = self.game.spill_bane2.top
+            self.vy = 0   

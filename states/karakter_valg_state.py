@@ -17,6 +17,7 @@ class SelectionState(BaseState):
         self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
 
     def start_musikk(self):
+        pygame.mixer.Sound("assets/click_menu.mp3").play()
         a1 = randint(1,100)
 
         if a1 <= 2:
@@ -39,6 +40,12 @@ class SelectionState(BaseState):
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                          if self.start_box.collidepoint(event.pos):
+                            self.next_state = "GAME"
+                            self.done = True
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                         if self.start_box2.collidepoint(event.pos):
+                            pygame.mixer.Sound("assets/feit_latter.waw").play()
                             self.next_state = "GAME"
                             self.done = True
 
