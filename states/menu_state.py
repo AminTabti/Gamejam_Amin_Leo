@@ -27,7 +27,7 @@ class MenuState(BaseState):
         pygame.mixer.music.set_volume(0.5)
     
     def slutt_musikk(self):
-        pygame.mixer.music.fadeout(1000)
+        pygame.mixer.music.fadeout(20)
 
 
     def handle_events(self, events : list[pygame.event.Event]):
@@ -39,7 +39,7 @@ class MenuState(BaseState):
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                          if self.start_box.collidepoint(event.pos):
-                            self.next_state = "GAME"
+                            self.next_state = "SELECTION"
                             self.done = True
 
     def update(self, dt: float):
