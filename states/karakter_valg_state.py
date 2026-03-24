@@ -9,10 +9,9 @@ from random import randint
 class SelectionState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
-        self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
+        self.bakgrunn_load = pygame.image.load("assets/karakter_valg.png").convert()
+        self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (1200, 600))
         self.start_box = pygame.Rect(0, 50, 590, 300) #x, y, bredde 590, høyde
-        self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
 
     def start_musikk(self):
         a1 = randint(1,100)
@@ -44,5 +43,5 @@ class SelectionState(BaseState):
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.bakgrunn2, (0,0))
+        surface.blit(self.bakgrunn, (0,0))
         self.draw_text(surface, "Menu", self.font, (0,0, 0), (875, 60))
