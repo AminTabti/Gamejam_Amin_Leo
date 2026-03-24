@@ -45,7 +45,7 @@ class SelectionState(BaseState):
             if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                          if self.start_box2.collidepoint(event.pos):
-                            pygame.mixer.Sound("assets/feit_latter.waw").play()
+                            pygame.mixer.Sound("assets/feit_latter.wav").play()
                             self.next_state = "GAME"
                             self.done = True
 

@@ -49,7 +49,7 @@ class GameState(BaseState):
         else:
             pygame.mixer.music.load("assets/menu_music3.mp3")
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(0.1)
 
 
     def update(self, dt: float):
