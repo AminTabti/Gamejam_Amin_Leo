@@ -42,7 +42,7 @@ class GameState(BaseState):
     def start_musikk(self):
         pygame.mixer.music.load("assets/battlefield_music.mp3")
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(0.3)
 
 
     def update(self, dt: float):
@@ -84,6 +84,7 @@ class Player(GameObject):
         screen.blit(self.bilde, self.rect)
 
     def update(self):
+        gammel_bottom = self.rect.bottom  # brukte chat for å finne ut av hvordan man gjøre at kollisjonene funker å sidene av platformene også
         self.vy += 0.0981
         self.rect.y += self.vy
         keys = pygame.key.get_pressed()
@@ -98,9 +99,9 @@ class Player(GameObject):
             self.rect.y += self.speed
         #-------- Chat over ---------
 
-        if self.rect.colliderect(self.game.spill_bane1):
+        if self.rect.colliderect(self.game.spill_bane1) and gammel_bottom <=self.game.spill_bane1.top :
             self.rect.bottom = self.game.spill_bane1.top
             self.vy = 0
-        if self.rect.colliderect(self.game.spill_bane2):
+        if self.rect.colliderect(self.game.spill_bane2) and gammel_bottom <=self.game.spill_bane2.top  :
             self.rect.bottom = self.game.spill_bane2.top
             self.vy = 0   
