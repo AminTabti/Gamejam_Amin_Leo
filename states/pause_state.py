@@ -8,11 +8,11 @@ import pygame
 class PauseState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("Gamejam_Amin_Leo/assets/Pause_bakrund.png").convert()
+        self.bakrund_load =  pygame.image.load("assets/Pause_bakrund.png").convert()
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
 
     def start_musikk(self):
-        pygame.mixer.music.load("Gamejam_Amin_Leo/assets/elevator_music.mp3")
+        pygame.mixer.music.load("assets/elevator_music.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.2)
     
