@@ -8,8 +8,7 @@ from states.menu_state import MenuState
 from states.game_state import GameState
 from states.pause_state import PauseState
 from states.karakter_valg_state import SelectionState
-#amin er dumm
-#HEI-Leonard
+
 class Spill:
     def __init__(self):
         pygame.init()

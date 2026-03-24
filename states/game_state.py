@@ -18,10 +18,10 @@ class GameState(BaseState):
 
     #----------Chat under ---------------------
         self.player1 = Player(300, 300, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, farge=(30, 60, 200))
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde = "assets/mario_karakter.png")
 
         self.player2 = Player(800, 300, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, farge=(200, 60, 30))
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png")
     #----------Chat over------------------------
 
 
@@ -40,14 +40,7 @@ class GameState(BaseState):
                     self.next_state = "PAUSE"
                     self.done = True
     def start_musikk(self):
-        a1 = randint(1,5)
-
-        if a1 <= 2:
-            pygame.mixer.music.load("assets/menu_music1.mp3")
-        elif a1 <= 4:
-            pygame.mixer.music.load("assets/menu_music2.mp3")
-        else:
-            pygame.mixer.music.load("assets/menu_music3.mp3")
+        pygame.mixer.music.load("assets/battlefield_music.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.2)
 
@@ -64,30 +57,31 @@ class GameState(BaseState):
         self.player2.draw(surface)
 
 class GameObject:
-    def __init__(self, x, y, width, height, farge):
+    def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)
-        self.farge = farge
         self.x = x
         self.y = y
 
-        
     def update(self):
         pass
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.farge, self.rect)
+        pygame.draw.rect(screen, self.rect)
 
 
 class Player(GameObject):
-    def __init__(self, x, y, game, kontroller, farge):
-        super().__init__(x, y, 50, 50, (30,60,200))
+    def __init__(self, x, y, game, kontroller, bilde):
+        super().__init__(x, y, 50, 50)
         self.speed = 9
         self.vy = 0
         self.game = game
         self.kontroller = kontroller
+
+        self.bilde = pygame.image.load(bilde)
+        self.bilde = pygame.transform.scale(self.bilde, (50, 50))
     
     def draw(self, screen):
-        pygame.draw.rect(screen, self.farge, self.rect)
+        screen.blit(self.bilde, self.rect)
 
     def update(self):
         self.vy += 0.0981

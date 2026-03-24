@@ -31,5 +31,5 @@ class PauseState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        self.draw_text(surface, "game (paused) press p to continiue", 
+        self.draw_text(surface, "Chill lounge her, bare for chill folk", 
                        pygame.font.SysFont("Algerian", 40, italic = True), (255, 255, 255), (600, 300))
