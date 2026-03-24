@@ -11,6 +11,8 @@ class SelectionState(BaseState):
         super().__init__()
         self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
         self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
+        self.start_box = pygame.Rect(0, 50, 590, 300) #x, y, bredde 590, høyde
+        self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
 
     def start_musikk(self):
         a1 = randint(1,100)
