@@ -7,7 +7,7 @@ from states.base_state import BaseState
 from states.menu_state import MenuState
 from states.game_state import GameState
 from states.pause_state import PauseState
-
+#amin er dumm
 class Spill:
     def __init__(self):
         pygame.init()
