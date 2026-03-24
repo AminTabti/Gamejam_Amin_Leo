@@ -7,8 +7,6 @@ from states.base_state import BaseState
 from states.menu_state import MenuState
 from states.game_state import GameState
 from states.pause_state import PauseState
-#amin er dumm
-#HEI-Leonard
 class Spill:
     def __init__(self):
         pygame.init()
@@ -77,4 +75,3 @@ while spill.running:
     spill.main_loop()
 
 pygame.quit()
-#hei leonard
