@@ -11,7 +11,9 @@ class SelectionState(BaseState):
         super().__init__()
         self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
         self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
-        self.start_box = pygame.Rect(0, 50, 590, 300) #x, y, bredde 590, høyde
+        self.start_box = pygame.Rect(80, 50, 335, 450)
+        self.start_box2 = pygame.Rect(425, 50, 350, 450) 
+        self.start_box3 = pygame.Rect(0, 50, 590, 300)
         self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
 
     def start_musikk(self):
@@ -45,4 +47,6 @@ class SelectionState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakgrunn2, (0,0))
-        self.draw_text(surface, "Menu", self.font, (0,0, 0), (875, 60))
+        pygame.draw.rect(surface,(255,0,0), self.start_box,2)
+        pygame.draw.rect(surface,(255,0,0), self.start_box2,2)
+        self.draw_text(surface, "PLAYER 1", self.font, (0,0, 0), (875, 60))
