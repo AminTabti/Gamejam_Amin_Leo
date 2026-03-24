@@ -17,11 +17,18 @@ class SelectionState(BaseState):
         self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
         self.selection_player1 = False
 
+        self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
+        self.feit_latter.set_volume(1)
+        self.rap = pygame.mixer.Sound("assets/RAP.mp3")
+        self.rap.set_volume(1)
+        self.promp = pygame.mixer.Sound("assets/promp.mp3")
+        self.promp.set_volume(1) # brukte chat for å finne ut hvordan gjøre lyd høyere
+
     def start_musikk(self):
         pygame.mixer.Sound("assets/click_menu.mp3").play()
         pygame.mixer.music.load("assets/Selection_music.mp3")
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(0.2)
     
     def slutt_musikk(self):
         pygame.mixer.music.fadeout(1000)
@@ -51,7 +58,9 @@ class SelectionState(BaseState):
                             self.selection_player1 = True
 
                     elif self.start_box3.collidepoint(event.pos):
-                        pygame.mixer.Sound("assets/feit_latter.wav").play()
+                        self.feit_latter.play()
+                        self.rap.play()
+                        self.promp.play()
                         if self.selection_player1 == True:
                             self.selection_player1 = False
                             self.next_state = "GAME"
