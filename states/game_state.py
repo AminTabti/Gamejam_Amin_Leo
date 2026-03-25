@@ -13,6 +13,7 @@ class GameState(BaseState):
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
         self.spill_bane1 = pygame.Rect(225, 550, 750, 50) #x, y, bredde, høyde
         self.spill_bane2 = pygame.Rect(95, 450, 1000, 100)
+       
     #----------Chat under ---------------------
     def startup(self, persistent):
         self.persist = persistent
@@ -84,6 +85,8 @@ class Player(GameObject):
         super().__init__(x, y, self.game.bredde, self.game.høyde)
         self.speed = 9
         self.vy = 0
+        self.jumping = False
+        self.på_bakken = False
         
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
@@ -95,23 +98,32 @@ class Player(GameObject):
 
     def update(self):
         gammel_bottom = self.rect.bottom  # brukte chat for å finne ut av hvordan man gjøre at kollisjonene funker å sidene av platformene også
-        self.vy += 0.0981
-        self.rect.y += self.vy
+        
         keys = pygame.key.get_pressed()
         #---------Chat under ---------
         if keys[self.kontroller["left"]]:
             self.rect.x -= self.speed
         if keys[self.kontroller["right"]]:
             self.rect.x += self.speed
-        if keys[self.kontroller["up"]]:
-            self.rect.y -= self.speed
+        if keys[self.kontroller["up"]] and self.på_bakken:
+            self.vy = -10  
+            self.på_bakken = False
         if keys[self.kontroller["down"]]:
             self.rect.y += self.speed
         #-------- Chat over ---------
+        if self.jumping == True and self.på_bakken == True:
+            self.vy = -8
+            self.jumping = False
+        self.vy += 0.181
+        self.rect.y += self.vy         
+        
+        self.på_bakken = False
 
         if self.rect.colliderect(self.game.spill_bane1) and gammel_bottom <=self.game.spill_bane1.top :
             self.rect.bottom = self.game.spill_bane1.top
             self.vy = 0
+            self.på_bakken = True
         if self.rect.colliderect(self.game.spill_bane2) and gammel_bottom <=self.game.spill_bane2.top  :
             self.rect.bottom = self.game.spill_bane2.top
             self.vy = 0   
+            self.på_bakken = True
