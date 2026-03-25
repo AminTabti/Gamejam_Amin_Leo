@@ -85,8 +85,10 @@ class Player(GameObject):
         super().__init__(x, y, self.game.bredde, self.game.høyde)
         self.speed = 9
         self.vy = 0
-        self.jumping = False
         self.på_bakken = False
+
+        self.antall_hopp = 0
+        self.max_hopp = 2
         
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
@@ -100,21 +102,24 @@ class Player(GameObject):
         gammel_bottom = self.rect.bottom  # brukte chat for å finne ut av hvordan man gjøre at kollisjonene funker å sidene av platformene også
         
         keys = pygame.key.get_pressed()
-        #---------Chat under ---------
-        if keys[self.kontroller["left"]]:
-            self.rect.x -= self.speed
-        if keys[self.kontroller["right"]]:
-            self.rect.x += self.speed
-        if keys[self.kontroller["up"]] and self.på_bakken:
-            self.vy = -10  
-            self.på_bakken = False
+        if keys[self.kontroller["left"]]: # chat
+            self.rect.x -= self.speed #chat
+        if keys[self.kontroller["right"]]: #chat
+            self.rect.x += self.speed #chat
+
+        if keys[self.kontroller["up"]]:
+            if self.på_bakken or self.antall_hopp < self.max_hopp:
+                self.vy = -8  
+                self.på_bakken = False
+                self.antall_hopp += 1
+
         if keys[self.kontroller["down"]]:
-            self.rect.y += self.speed
-        #-------- Chat over ---------
-        if self.jumping == True and self.på_bakken == True:
-            self.vy = -8
-            self.jumping = False
-        self.vy += 0.181
+            if self.vy <= 0:
+                self.vy = 0
+            else:
+                self.rect.y += 5
+    
+        self.vy += 0.4
         self.rect.y += self.vy         
         
         self.på_bakken = False
@@ -123,7 +128,9 @@ class Player(GameObject):
             self.rect.bottom = self.game.spill_bane1.top
             self.vy = 0
             self.på_bakken = True
+            self.antall_hopp = 0
         if self.rect.colliderect(self.game.spill_bane2) and gammel_bottom <=self.game.spill_bane2.top  :
             self.rect.bottom = self.game.spill_bane2.top
             self.vy = 0   
             self.på_bakken = True
+            self.antall_hopp = 0
