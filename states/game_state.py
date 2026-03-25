@@ -9,10 +9,10 @@ from random import randint
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("assets/battlefield.png").convert()
-        self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
-        self.spill_bane1 = pygame.Rect(225, 550, 750, 50) #x, y, bredde, høyde
-        self.spill_bane2 = pygame.Rect(95, 450, 1000, 100)
+        self.bakrund_load =  pygame.image.load("assets/battlefield2.png").convert()
+        self.bakrund = pygame.transform.scale(self.bakrund_load, (1300, 700))
+        self.spill_bane2 = pygame.Rect(215, 445, 873, 85) #x, y, bredde, høyde
+        self.spill_bane1 = pygame.Rect(275, 530, 775, 50) # 190, 480, 920, 20 -- ikke slett dette!
        
     #----------Chat under ---------------------
     def startup(self, persistent):

@@ -13,11 +13,11 @@ class SelectionState(BaseState):
         self.valgtHerman = False
         self.valgtDoomfist = False
         self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
-        self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
-        self.start_box = pygame.Rect(80, 50, 335, 450)
-        self.start_box2 = pygame.Rect(425, 50, 350, 450) #x, y, bredde, høyde
-        self.start_box3 = pygame.Rect(790, 50, 325, 450)
-        self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
+        self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1300, 700))
+        self.start_box = pygame.Rect(80, 60, 360, 545)
+        self.start_box2 = pygame.Rect(450, 60, 390, 545) #x, y, bredde, høyde
+        self.start_box3 = pygame.Rect(860, 55, 375, 550)
+        self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1300, 700))
         self.selection_player1 = False
 
         self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
