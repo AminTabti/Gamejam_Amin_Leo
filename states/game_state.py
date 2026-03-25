@@ -9,8 +9,6 @@ from random import randint
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bredde = 1200
-        self.høyde  = 600
         self.bakrund_load =  pygame.image.load("assets/battlefield.png").convert()
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
         self.spill_bane1 = pygame.Rect(225, 550, 750, 50) #x, y, bredde, høyde
@@ -21,16 +19,16 @@ class GameState(BaseState):
         self.valgtBirk = self.persist.get("valgtBirk", False)
         if self.valgtBirk:
             bilde1 = "assets/Birk.png"
-            self.bredde = 700
-            self.høyde = 800
+            self.bredde = 200
+            self.høyde = 200
         else:
-            self.bredde = 400
-            self.høyde = 400
+            self.bredde = 100
+            self.høyde = 100
             bilde1 = "assets/luigi_karakter.png"
-        self.player1 = Player(300, 300, self, kontroller={
+        self.player1 = Player(300, 0, self, kontroller={
         "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde=bilde1)
 
-        self.player2 = Player(800, 300, self, kontroller={
+        self.player2 = Player(800, 0, self, kontroller={
         "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png")
         
     #----------Chat over------------------------
@@ -62,13 +60,14 @@ class GameState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        
+        #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
+        #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
         self.player1.draw(surface)
         self.player2.draw(surface)
 
 class GameObject:
-    def __init__(self, x, y, width, height):
-        self.rect = pygame.Rect(x, y, width, height)
+    def __init__(self, x, y, bredde, høyde):
+        self.rect = pygame.Rect(x, y, bredde, høyde)
         self.x = x
         self.y = y
 
@@ -81,10 +80,11 @@ class GameObject:
 
 class Player(GameObject):
     def __init__(self, x, y, game, kontroller, bilde):
-        super().__init__(x, y, 50, 50)
+        self.game = game
+        super().__init__(x, y, self.game.bredde, self.game.høyde)
         self.speed = 9
         self.vy = 0
-        self.game = game
+        
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (self.game.bredde, self.game.høyde))
