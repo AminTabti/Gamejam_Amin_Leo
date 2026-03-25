@@ -61,8 +61,8 @@ class GameState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
-        #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
+        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
+        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
         self.player1.draw(surface)
         self.player2.draw(surface)
 
@@ -83,7 +83,7 @@ class Player(GameObject):
     def __init__(self, x, y, game, kontroller, bilde):
         self.game = game
         super().__init__(x, y, self.game.bredde, self.game.høyde)
-        self.speed = 9
+        self.speed = 7
         self.vy = 0
         self.på_bakken = False
 
@@ -120,17 +120,24 @@ class Player(GameObject):
                 self.rect.y += 5
     
         self.vy += 0.4
-        self.rect.y += self.vy         
+        self.rect.y += self.vy     
         
         self.på_bakken = False
 
-        if self.rect.colliderect(self.game.spill_bane1) and gammel_bottom <=self.game.spill_bane1.top :
-            self.rect.bottom = self.game.spill_bane1.top
-            self.vy = 0
-            self.på_bakken = True
-            self.antall_hopp = 0
-        if self.rect.colliderect(self.game.spill_bane2) and gammel_bottom <=self.game.spill_bane2.top  :
-            self.rect.bottom = self.game.spill_bane2.top
-            self.vy = 0   
-            self.på_bakken = True
-            self.antall_hopp = 0
+        for platform in [self.game.spill_bane1, self.game.spill_bane2]:
+            if self.rect.colliderect(platform):
+                if gammel_bottom <= platform.top:
+                    self.rect.bottom = platform.top
+                    self.vy = 0
+                    self.på_bakken = True
+                    self.antall_hopp = 0
+
+                elif self.rect.top <= platform.bottom and self.vy < 0:
+                    self.rect.top = platform.bottom
+                    self.vy = 0
+
+                elif self.rect.right > platform.left and self.rect.left < platform.left:
+                    self.rect.right = platform.left
+
+                elif self.rect.left < platform.right and self.rect.right > platform.right:
+                    self.rect.left = platform.right
