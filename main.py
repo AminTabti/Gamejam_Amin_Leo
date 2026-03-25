@@ -59,11 +59,12 @@ class Spill:
                 self.current_state.slutt_musikk()
 
             if next_state:
+                persist = self.current_state.persist
                 self.current_state = self.states[next_state]
+                self.current_state.startup(persist)
 
                 if hasattr(self.current_state, "start_musikk"):
                     self.current_state.start_musikk()
-
             else:
                 self.running = False
 

@@ -20,7 +20,7 @@ class BaseState(ABC):
         self.done = False
         self.next_state = None
         self.font = pygame.font.SysFont("Times New Roman", 80, bold = True, italic = True)
-
+        self.persist = {}
     def start_musikk(self):
         pass
     
@@ -34,6 +34,9 @@ class BaseState(ABC):
         text_rect = text.get_rect(center = center)
         # Setter teksten på overflaten man spesifiserte.
         surface.blit(text, text_rect)
+    
+    def startup(self, persistent): # dette er for å lagre variabler, med hjelp av ai ****
+        self.persist = persistent
 
     @abstractmethod
     def handle_events(self, events : list[pygame.event.Event]):

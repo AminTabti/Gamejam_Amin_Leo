@@ -3,6 +3,7 @@ Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc
 """
 
 from states.base_state import BaseState
+from states.karakter_valg_state import SelectionState
 import pygame
 from random import randint
 class GameState(BaseState):
@@ -14,14 +15,24 @@ class GameState(BaseState):
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
         self.spill_bane1 = pygame.Rect(225, 550, 750, 50) #x, y, bredde, høyde
         self.spill_bane2 = pygame.Rect(95, 450, 1000, 100)
-
-
     #----------Chat under ---------------------
+    def startup(self, persistent):
+        self.persist = persistent
+        self.valgtBirk = self.persist.get("valgtBirk", False)
+        if self.valgtBirk:
+            bilde1 = "assets/Birk.png"
+            self.bredde = 700
+            self.høyde = 800
+        else:
+            self.bredde = 400
+            self.høyde = 400
+            bilde1 = "assets/luigi_karakter.png"
         self.player1 = Player(300, 300, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde = "assets/mario_karakter.png")
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde=bilde1)
 
         self.player2 = Player(800, 300, self, kontroller={
         "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png")
+        
     #----------Chat over------------------------
 
 
@@ -51,8 +62,7 @@ class GameState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
-        pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
+        
         self.player1.draw(surface)
         self.player2.draw(surface)
 
@@ -76,9 +86,9 @@ class Player(GameObject):
         self.vy = 0
         self.game = game
         self.kontroller = kontroller
-
         self.bilde = pygame.image.load(bilde)
-        self.bilde = pygame.transform.scale(self.bilde, (50, 50))
+        self.bilde = pygame.transform.scale(self.bilde, (self.game.bredde, self.game.høyde))
+        
     
     def draw(self, screen):
         screen.blit(self.bilde, self.rect)

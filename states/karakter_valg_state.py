@@ -9,6 +9,9 @@ from random import randint
 class SelectionState(BaseState):
     def __init__(self):
         super().__init__()
+        self.valgtBirk = False
+        self.valgtHerman = False
+        self.valgtDoomfist = False
         self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
         self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1200, 600))
         self.start_box = pygame.Rect(80, 50, 335, 450)
@@ -18,11 +21,8 @@ class SelectionState(BaseState):
         self.selection_player1 = False
 
         self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
-        self.feit_latter.set_volume(1)
         self.rap = pygame.mixer.Sound("assets/RAP.mp3")
-        self.rap.set_volume(1)
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
-        self.promp.set_volume(1) # brukte chat for å finne ut hvordan gjøre lyd høyere
 
     def start_musikk(self):
         pygame.mixer.Sound("assets/click_menu.mp3").play()
@@ -46,6 +46,7 @@ class SelectionState(BaseState):
                             self.selection_player1 = False
                             self.next_state = "GAME"
                             self.done = True
+
                         else:
                             self.selection_player1 = True
                         
@@ -59,10 +60,13 @@ class SelectionState(BaseState):
 
                     elif self.start_box3.collidepoint(event.pos):
                         self.feit_latter.play()
+                        self.feit_latter.play()
+                        self.feit_latter.play()
                         self.rap.play()
                         self.promp.play()
                         if self.selection_player1 == True:
                             self.selection_player1 = False
+                            self.persist["valgtBirk"] = True  #Brukte chat for å finne ut av hvordan jeg kan lagre variabeler i forskjellige filer
                             self.next_state = "GAME"
                             self.done = True
                         else:
