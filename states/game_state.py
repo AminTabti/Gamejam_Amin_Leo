@@ -27,10 +27,10 @@ class GameState(BaseState):
             self.høyde = 100
             bilde1 = "assets/luigi_karakter.png"
         self.player1 = Player(300, 0, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde=bilde1)
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde=bilde1, hoppe_bilde="assets/Birk_hopp.png")
 
         self.player2 = Player(800, 0, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png")
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png", hoppe_bilde="assets/Birk_hopp.png" )
         
     #----------Chat over------------------------
 
@@ -114,6 +114,8 @@ class Player(GameObject):
         if self.jumping == True and self.på_bakken == True:
             self.vy = -8
             self.jumping = False
+            if self.valgtbirk:
+                self.bilde = self.hoppe_bilde
         self.vy += 0.181
         self.rect.y += self.vy         
         
@@ -123,6 +125,7 @@ class Player(GameObject):
             self.rect.bottom = self.game.spill_bane1.top
             self.vy = 0
             self.på_bakken = True
+            self.bilde = self.vanlig_bilde
         if self.rect.colliderect(self.game.spill_bane2) and gammel_bottom <=self.game.spill_bane2.top  :
             self.rect.bottom = self.game.spill_bane2.top
             self.vy = 0   
