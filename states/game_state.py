@@ -159,7 +159,7 @@ class Player(GameObject):
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
                     self.vy = 0
-        self.update_image()
+       # self.update_image()
 """
     def update_image(self): # https://www.youtube.com/watch?v=u7XpkyemKTo for insipirasjon/guide, denne også 
         if self.på_bakken == False:
