@@ -11,26 +11,31 @@ class GameState(BaseState):
         super().__init__()
         self.bakgrunn_load =  pygame.image.load("assets/battlefield2.png").convert()
         self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (1300, 700))
-        self.spill_bane2 = pygame.Rect(215, 445, 873, 85) #x, y, bredde, høyde
+        self.spill_bane2 = pygame.Rect(230, 445, 845, 85) #x, y, bredde, høyde
         self.spill_bane1 = pygame.Rect(275, 530, 775, 50) # 190, 480, 920, 20 -- ikke slett dette!
        
-    #----------Chat under ---------------------
-    def startup(self, persistent):
+    def startup(self, persistent):# <-- chat, men ikke alt inni
         self.persist = persistent
-        self.valgtBirk = self.persist.get("valgtBirk", False)
-        if self.valgtBirk:
-            bilde1 = "assets/Birk.png"
-            self.bredde = 200
-            self.høyde = 200
-        else:
-            self.bredde = 100
-            self.høyde = 100
-            bilde1 = "assets/luigi_karakter.png"
+
+        karakter_bilder = { # fikk ide fra chat å bruke ordbok
+            "herman": ("assets/Herman_karakter.png", 100, 100),
+            "doomfist": ("assets/Doomfist.png", 100, 100),
+            "birk":  ("assets/Birk3.png", 150, 150),
+            }
+        
+        karakter1 = persistent.get("karakter_p1", "luigi")
+        karakter2 = persistent.get("karakter_p2", "luigi")
+
+        bilde1, bredde1, høyde1 = karakter_bilder[karakter1] # chat
+        bilde2, bredde2, høyde2 = karakter_bilder[karakter2] # chat
+
         self.player1 = Player(300, 0, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, bilde=bilde1)
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, 
+        bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200))
 
         self.player2 = Player(800, 0, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, bilde = "assets/luigi_karakter.png")
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, 
+        bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0))
         
     #----------Chat over------------------------
 
@@ -84,9 +89,13 @@ class GameObject:
 
 
 class Player(GameObject):
-    def __init__(self, x, y, game, kontroller, bilde):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge):
         self.game = game
-        super().__init__(x, y, self.game.bredde, self.game.høyde)
+        super().__init__(x, y, bredde, høyde)
+        self.navn = navn
+        self.farge = farge
+        self.font = pygame.font.SysFont("Times new roman", 200)
+
         self.speed = 7
         self.vy = 0
         self.på_bakken = False
@@ -96,7 +105,7 @@ class Player(GameObject):
         
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
-        self.bilde = pygame.transform.scale(self.bilde, (self.game.bredde, self.game.høyde))
+        self.bilde = pygame.transform.scale(self.bilde, (bredde, høyde))
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -108,6 +117,8 @@ class Player(GameObject):
 
     def draw(self, screen):
         screen.blit(self.bilde, self.rect)
+        tekst = self.font.render(self.navn, True, self.farge)
+        screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
 
     def update(self):
         keys = pygame.key.get_pressed()

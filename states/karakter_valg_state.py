@@ -18,6 +18,7 @@ class SelectionState(BaseState):
         self.start_box2 = pygame.Rect(450, 60, 390, 545) #x, y, bredde, høyde
         self.start_box3 = pygame.Rect(860, 55, 375, 550)
         self.selection_player1 = False
+        self.valg_player1 = None # for å lagre valg til p1
 
         self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
         self.rap = pygame.mixer.Sound("assets/RAP.mp3")
@@ -40,36 +41,30 @@ class SelectionState(BaseState):
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
+                    klikket_karakter = None
                     if self.start_box.collidepoint(event.pos):
-                        if self.selection_player1 == True:
-                            self.selection_player1 = False
-                            self.next_state = "GAME"
-                            self.done = True
-
-                        else:
-                            self.selection_player1 = True
-                        
+                        klikket_karakter = "herman"
                     elif self.start_box2.collidepoint(event.pos):
-                        if self.selection_player1 == True:
-                            self.selection_player1 = False
-                            self.next_state = "GAME"
-                            self.done = True
-                        else:
-                            self.selection_player1 = True
-
+                        klikket_karakter = "doomfist"
                     elif self.start_box3.collidepoint(event.pos):
+                        klikket_karakter = "birk"
                         self.feit_latter.play()
                         self.feit_latter.play()
                         self.feit_latter.play()
                         self.rap.play()
                         self.promp.play()
-                        if self.selection_player1 == True:
+
+                    if klikket_karakter:
+                        if not self.selection_player1: # fant ikke en bedre måte
+                            self.valg_player1 = klikket_karakter
+                            self.selection_player1 = True
+                        else:
+                            self.persist["karakter_p1"] = self.valg_player1 #Brukte chat for å finne ut av hvordan jeg kan lagre variabeler i forskjellige filer
+                            self.persist["karakter_p2"] = klikket_karakter
                             self.selection_player1 = False
-                            self.persist["valgtBirk"] = True  #Brukte chat for å finne ut av hvordan jeg kan lagre variabeler i forskjellige filer
                             self.next_state = "GAME"
                             self.done = True
-                        else:
-                            self.selection_player1 = True
+
 
     def update(self, dt: float):
         pass
