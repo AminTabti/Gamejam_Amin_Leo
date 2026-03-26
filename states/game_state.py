@@ -119,7 +119,7 @@ class Player(GameObject):
             else:
                 self.rect.y += 5
     
-        self.vy += 0.4
+        self.vy += 0.24
         self.rect.y += self.vy     
         
         self.på_bakken = False

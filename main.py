@@ -13,7 +13,7 @@ class Spill:
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("Smash Bros")
-        self.screen = pygame.display.set_mode((1300, 700))
+        self.screen = pygame.display.set_mode((0, 0),pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
         self.running = True
         self.states = {
