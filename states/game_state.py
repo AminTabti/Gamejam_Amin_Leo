@@ -20,7 +20,7 @@ class GameState(BaseState):
         karakter_bilder = { # fikk ide fra chat å bruke ordbok
             "herman": ("assets/Herman_karakter.png", 100, 100),
             "doomfist": ("assets/Doomfist.png", 100, 100),
-            "birk":  ("assets/Birk3.png", 150, 150),
+            "birk":  ("assets/Birk_bein.png", 150, 150),
             }
         
         karakter1 = persistent.get("karakter_p1", "luigi")
@@ -148,7 +148,7 @@ class Player(GameObject):
         
         self.på_bakken = False
 
-        for platform in [self.game.spill_bane1, self.game.spill_bane2]:
+        for platform in [self.game.spill_bane1, self.game.spill_bane2]: # hjelp fra chat men skrevet selv
             if self.rect.colliderect(platform):
                 if self.vy >= 0:
                     self.rect.bottom = platform.top
@@ -159,3 +159,9 @@ class Player(GameObject):
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
                     self.vy = 0
+        self.update_image()
+"""
+    def update_image(self): # https://www.youtube.com/watch?v=u7XpkyemKTo for insipirasjon/guide, denne også 
+        if self.på_bakken == False:
+            self.bilde = pygame.image.load("assets/Birk_hopp.png")
+"""
