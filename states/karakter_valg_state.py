@@ -20,9 +20,13 @@ class SelectionState(BaseState):
         self.selection_player1 = False
         self.valg_player1 = None # for å lagre valg til p1
 
+#Lyder her_____________________________________________________________________
         self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
         self.rap = pygame.mixer.Sound("assets/RAP.mp3")
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
+        self.doom_v1 = pygame.mixer.Sound("assets/doom_voice1.mp3")
+        self.herman_v1 = pygame.mixer.Sound("assets/herman_voice1.mp3")
+#________________________________________________________________________________
 
     def start_musikk(self):
         pygame.mixer.Sound("assets/click_menu.mp3").play()
@@ -44,8 +48,28 @@ class SelectionState(BaseState):
                     klikket_karakter = None
                     if self.start_box.collidepoint(event.pos):
                         klikket_karakter = "herman"
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
+                        self.herman_v1.play()
                     elif self.start_box2.collidepoint(event.pos):
                         klikket_karakter = "doomfist"
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
+                        self.doom_v1.play()
                     elif self.start_box3.collidepoint(event.pos):
                         klikket_karakter = "birk"
                         self.feit_latter.play()
