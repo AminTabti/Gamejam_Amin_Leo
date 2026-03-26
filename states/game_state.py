@@ -60,8 +60,7 @@ class GameState(BaseState):
         self.player2.update()
 
     def draw(self, surface: pygame.Surface):
-        self.vindu_størrelse = pygame.transform.scale(self.bakgrunn_load, surface.get_size())
-        surface.blit(self.vindu_størrelse, (0,0))
+        surface.blit(self.bakgrunn, (0,0))
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
         self.player1.draw(surface)
