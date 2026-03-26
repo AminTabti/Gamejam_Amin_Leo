@@ -12,12 +12,11 @@ class SelectionState(BaseState):
         self.valgtBirk = False
         self.valgtHerman = False
         self.valgtDoomfist = False
-        self.bakgrunn_load2 = pygame.image.load("assets/karakter_valg.png").convert()
-        self.bakgrunn2 = pygame.transform.scale(self.bakgrunn_load2, (1300, 700))
+        self.bakgrunn_load = pygame.image.load("assets/karakter_valg.png").convert()
+        self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (0, 0))
         self.start_box = pygame.Rect(80, 60, 360, 545)
         self.start_box2 = pygame.Rect(450, 60, 390, 545) #x, y, bredde, høyde
         self.start_box3 = pygame.Rect(860, 55, 375, 550)
-        self.bakrund = pygame.transform.scale(self.bakgrunn_load2, (1300, 700))
         self.selection_player1 = False
 
         self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
@@ -76,7 +75,9 @@ class SelectionState(BaseState):
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.bakgrunn2, (0,0))
+        self.vindu_størrelse = pygame.transform.scale(self.bakgrunn_load, surface.get_size())
+        surface.blit(self.vindu_størrelse, (0,0))
+        surface.blit(self.bakgrunn, (0,0))
         pygame.draw.rect(surface,(255,0,0), self.start_box, 2)
         pygame.draw.rect(surface,(255,0,0), self.start_box2, 2)
         pygame.draw.rect(surface,(255,0,0), self.start_box3, 2)

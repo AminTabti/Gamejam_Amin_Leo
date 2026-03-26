@@ -9,7 +9,7 @@ class PauseState(BaseState):
     def __init__(self):
         super().__init__()
         self.bakrund_load =  pygame.image.load("assets/Pause_bakrund.png").convert()
-        self.bakrund = pygame.transform.scale(self.bakrund_load, (1300, 700))
+        self.bakrund = pygame.transform.scale(self.bakrund_load, (0, 0))
 
     def start_musikk(self):
         pygame.mixer.music.load("assets/elevator_music.mp3")
@@ -30,6 +30,7 @@ class PauseState(BaseState):
         pass
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.bakrund, (0,0))
+        self.vindu_størrelse = pygame.transform.scale(self.bakrund_load, surface.get_size())
+        surface.blit(self.vindu_størrelse, (0,0))
         self.draw_text(surface, "Chill lounge her, bare for chill folk", 
                        pygame.font.SysFont("Algerian", 40, italic = True), (255, 255, 255), (600, 300))

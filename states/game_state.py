@@ -9,8 +9,8 @@ from random import randint
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("assets/battlefield2.png").convert()
-        self.bakrund = pygame.transform.scale(self.bakrund_load, (1300, 700))
+        self.bakgrunn_load =  pygame.image.load("assets/battlefield2.png").convert()
+        self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (1300, 700))
         self.spill_bane2 = pygame.Rect(215, 445, 873, 85) #x, y, bredde, høyde
         self.spill_bane1 = pygame.Rect(275, 530, 775, 50) # 190, 480, 920, 20 -- ikke slett dette!
        
@@ -60,7 +60,8 @@ class GameState(BaseState):
         self.player2.update()
 
     def draw(self, surface: pygame.Surface):
-        surface.blit(self.bakrund, (0,0))
+        self.vindu_størrelse = pygame.transform.scale(self.bakgrunn_load, surface.get_size())
+        surface.blit(self.vindu_størrelse, (0,0))
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
         self.player1.draw(surface)
