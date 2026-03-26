@@ -49,6 +49,10 @@ class GameState(BaseState):
                 if event.key == pygame.K_p:
                     self.next_state = "PAUSE"
                     self.done = True
+            self.player1.handle_event(event)
+            self.player2.handle_event(event)
+
+
     def start_musikk(self):
         pygame.mixer.music.load("assets/battlefield_music.mp3")
         pygame.mixer.music.play(-1)
@@ -93,25 +97,34 @@ class Player(GameObject):
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (self.game.bredde, self.game.høyde))
-        
     
+    def handle_event(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == self.kontroller["up"]:  # brukte chat for å finne ut hvordan gjøre at den ikke holdes inne
+                if self.på_bakken or self.antall_hopp < self.max_hopp:
+                    self.vy = -8
+                    self.på_bakken = False
+                    self.antall_hopp += 1
+
     def draw(self, screen):
         screen.blit(self.bilde, self.rect)
 
     def update(self):
-        gammel_bottom = self.rect.bottom  # brukte chat for å finne ut av hvordan man gjøre at kollisjonene funker å sidene av platformene også
-        
         keys = pygame.key.get_pressed()
+
         if keys[self.kontroller["left"]]: # chat
             self.rect.x -= self.speed #chat
         if keys[self.kontroller["right"]]: #chat
             self.rect.x += self.speed #chat
 
-        if keys[self.kontroller["up"]]:
-            if self.på_bakken or self.antall_hopp < self.max_hopp:
-                self.vy = -8  
-                self.på_bakken = False
-                self.antall_hopp += 1
+#-------------- chat under ----------------------------------------------
+        for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
+            if self.rect.colliderect(platform):
+                if self.rect.centerx < platform.left:
+                    self.rect.right = platform.left
+                elif self.rect.centerx > platform.right:
+                    self.rect.left = platform.right
+# ---------------- chat over--------------------------------------------------
 
         if keys[self.kontroller["down"]]:
             if self.vy <= 0:
@@ -119,25 +132,19 @@ class Player(GameObject):
             else:
                 self.rect.y += 5
     
-        self.vy += 0.4
+        self.vy += 0.25
         self.rect.y += self.vy     
         
         self.på_bakken = False
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]:
             if self.rect.colliderect(platform):
-                if gammel_bottom <= platform.top:
+                if self.vy >= 0:
                     self.rect.bottom = platform.top
                     self.vy = 0
                     self.på_bakken = True
                     self.antall_hopp = 0
 
-                elif self.rect.top <= platform.bottom and self.vy < 0:
+                elif self.vy < 0:
                     self.rect.top = platform.bottom
                     self.vy = 0
-
-                elif self.rect.right > platform.left and self.rect.left < platform.left:
-                    self.rect.right = platform.left
-
-                elif self.rect.left < platform.right and self.rect.right > platform.right:
-                    self.rect.left = platform.right
