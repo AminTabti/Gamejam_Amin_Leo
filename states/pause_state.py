@@ -9,7 +9,7 @@ class PauseState(BaseState):
     def __init__(self):
         super().__init__()
         self.bakrund_load =  pygame.image.load("assets/Pause_bakrund.png").convert()
-        self.bakrund = pygame.transform.scale(self.bakrund_load, (1200, 600))
+        self.bakrund = pygame.transform.scale(self.bakrund_load, (1300, 700))
 
     def start_musikk(self):
         pygame.mixer.music.load("assets/elevator_music.mp3")

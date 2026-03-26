@@ -130,3 +130,32 @@ class Player(GameObject):
             self.rect.bottom = self.game.spill_bane2.top
             self.vy = 0   
             self.på_bakken = True
+=======
+            if self.vy <= 0:
+                self.vy = 0
+            else:
+                self.rect.y += 5
+    
+        self.vy += 0.4
+        self.rect.y += self.vy     
+        
+        self.på_bakken = False
+
+        for platform in [self.game.spill_bane1, self.game.spill_bane2]:
+            if self.rect.colliderect(platform):
+                if gammel_bottom <= platform.top:
+                    self.rect.bottom = platform.top
+                    self.vy = 0
+                    self.på_bakken = True
+                    self.antall_hopp = 0
+
+                elif self.rect.top <= platform.bottom and self.vy < 0:
+                    self.rect.top = platform.bottom
+                    self.vy = 0
+
+                elif self.rect.right > platform.left and self.rect.left < platform.left:
+                    self.rect.right = platform.left
+
+                elif self.rect.left < platform.right and self.rect.right > platform.right:
+                    self.rect.left = platform.right
+>>>>>>> 8bbd2a159ef0ee0950333e99fbf7d97a0436bf73
