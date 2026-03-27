@@ -1,11 +1,12 @@
 """
 Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc...
 """
-
+import os
 from states.base_state import BaseState
 from states.karakter_valg_state import SelectionState
 import pygame
 from random import randint
+
 class GameState(BaseState):
     def __init__(self):
         super().__init__()
@@ -13,6 +14,7 @@ class GameState(BaseState):
         self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (1300, 700))
         self.spill_bane2 = pygame.Rect(230, 445, 845, 85) #x, y, bredde, høyde
         self.spill_bane1 = pygame.Rect(275, 530, 775, 50) # 190, 480, 920, 20 -- ikke slett dette!
+        
        
     def startup(self, persistent):# <-- chat, men ikke alt inni
         self.persist = persistent
@@ -106,6 +108,11 @@ class Player(GameObject):
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (bredde, høyde))
+        self.birk_bilde = self.Load_image("Birk_bein.png",(150,200))
+        self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
+
+        self.promp = pygame.mixer.Sound("assets/promp.mp3")
+        self.Birk_grunt = pygame.mixer.Sound("assets/Herman_voice1.mp3")
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -143,10 +150,10 @@ class Player(GameObject):
             else:
                 self.rect.y += 5
     
-        self.vy += 0.225
+        self.vy += 0.28
         self.rect.y += self.vy     
         
-        self.på_bakken = False
+        
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: # hjelp fra chat men skrevet selv
             if self.rect.colliderect(platform):
@@ -159,9 +166,20 @@ class Player(GameObject):
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
                     self.vy = 0
-       # self.update_image()
-"""
-    def update_image(self): # https://www.youtube.com/watch?v=u7XpkyemKTo for insipirasjon/guide, denne også 
+                    self.på_bakken = False
+        self.update_image()
+
+    def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
+        image = pygame.image.load(os.path.join("assets",bilde_navn))
+        if scale is not None:
+            image = pygame.transform.scale(image,scale)
+        return image
+    
+        
+        
+    def update_image(self):
         if self.på_bakken == False:
-            self.bilde = pygame.image.load("assets/Birk_hopp.png")
-"""
+           self.bilde = self.birk_hopp
+           self.promp.play()
+        elif self.på_bakken == True:
+            self.bilde = self.birk_bilde
