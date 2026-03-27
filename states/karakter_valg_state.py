@@ -32,7 +32,7 @@ class SelectionState(BaseState):
         pygame.mixer.Sound("assets/click_menu.mp3").play()
         pygame.mixer.music.load("assets/Selection_music.mp3")
         pygame.mixer.music.play(-1)
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(0.1)
     
     def slutt_musikk(self):
         pygame.mixer.music.fadeout(1000)
@@ -48,35 +48,20 @@ class SelectionState(BaseState):
                     klikket_karakter = None
                     if self.start_box.collidepoint(event.pos):
                         klikket_karakter = "herman"
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
-                        self.herman_v1.play()
+                        for i in range (20):
+                            self.herman_v1.play()
+
                     elif self.start_box2.collidepoint(event.pos):
                         klikket_karakter = "doomfist"
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
-                        self.doom_v1.play()
+                        for i in range (20):
+                            self.doom_v1.play()
+
                     elif self.start_box3.collidepoint(event.pos):
                         klikket_karakter = "birk"
-                        self.feit_latter.play()
-                        self.feit_latter.play()
-                        self.feit_latter.play()
-                        self.rap.play()
-                        self.promp.play()
+                        for i in range (10):
+                            self.feit_latter.play()
+                            self.rap.play()
+                            self.promp.play()
 
                     if klikket_karakter:
                         if not self.selection_player1: # fant ikke en bedre måte
