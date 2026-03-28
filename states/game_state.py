@@ -205,6 +205,7 @@ class Player(GameObject):
     def update_image_birk(self):
         if self.på_bakken == False:
            self.bilde = self.birk_hopp
+           self.promp.play()
            self.Birk_grunt.play()
         if self.birk_special_bool == True:
             self.bilde = self.birk_special
