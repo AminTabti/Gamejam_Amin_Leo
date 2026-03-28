@@ -202,8 +202,6 @@ class Player(GameObject):
             image = pygame.transform.scale(image,scale)
         return image
     
-        
-        
     def update_image_birk(self):
         if self.på_bakken == False:
            self.bilde = self.birk_hopp
@@ -212,7 +210,7 @@ class Player(GameObject):
             self.bilde = self.birk_special
         if self.birk_special_bool_ned == True:
             self.bilde = self.birk_special_ned
-        elif self.på_bakken == True:
+        if self.på_bakken == True:
             self.bilde = self.birk_bilde
     
     def update_image_doomfist(self):
