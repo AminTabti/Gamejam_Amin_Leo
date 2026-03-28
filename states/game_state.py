@@ -20,9 +20,9 @@ class GameState(BaseState):
         self.persist = persistent
 
         karakter_bilder = { # fikk ide fra chat å bruke ordbok
-            "herman": ("assets/Herman_karakter.png", 100, 100),
-            "doomfist": ("assets/Doomfist.png", 100, 100),
-            "birk":  ("assets/Birk_bein.png", 150, 150),
+            "herman": ("assets/Herman_karakter.png", 100, 150),
+            "doomfist": ("assets/Doomfist.png", 100, 150),
+            "birk":  ("assets/Birk_bein.png", 150, 200),
             }
         
         karakter1 = persistent.get("karakter_p1", "luigi")
@@ -31,13 +31,13 @@ class GameState(BaseState):
         bilde1, bredde1, høyde1 = karakter_bilder[karakter1] # chat
         bilde2, bredde2, høyde2 = karakter_bilder[karakter2] # chat
 
-        self.player1 = Player(300, 0, self, kontroller={
+        self.player1 = Player(300, 200, self, kontroller={
         "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, 
-        bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200))
+        bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
-        self.player2 = Player(800, 0, self, kontroller={
+        self.player2 = Player(800, 200, self, kontroller={
         "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, 
-        bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0))
+        bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
         
     #----------Chat over------------------------
 
@@ -91,7 +91,7 @@ class GameObject:
 
 
 class Player(GameObject):
-    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
         self.game = game
         super().__init__(x, y, bredde, høyde)
         self.navn = navn
@@ -108,11 +108,20 @@ class Player(GameObject):
         self.kontroller = kontroller
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (bredde, høyde))
+
         self.birk_bilde = self.Load_image("Birk_bein.png",(150,200))
         self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
 
+        self.doom_bilde = self.Load_image("Doomfist.png",(100,150))
+        self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
+
+        self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150))
+        self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
+
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Herman_voice1.mp3")
+
+        self.karakter = karakter
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -151,9 +160,7 @@ class Player(GameObject):
                 self.rect.y += 5
     
         self.vy += 0.28
-        self.rect.y += self.vy     
-        
-        
+        self.rect.y += self.vy
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: # hjelp fra chat men skrevet selv
             if self.rect.colliderect(platform):
@@ -167,7 +174,13 @@ class Player(GameObject):
                     self.rect.top = platform.bottom
                     self.vy = 0
                     self.på_bakken = False
-        self.update_image()
+        
+        if self.karakter == "birk":
+            self.update_image_birk()
+        if self.karakter == "doomfist":
+            self.update_image_doomfist()
+        if self.karakter == "herman":
+            self.update_image_herman()
 
     def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
         image = pygame.image.load(os.path.join("assets",bilde_navn))
@@ -177,9 +190,21 @@ class Player(GameObject):
     
         
         
-    def update_image(self):
+    def update_image_birk(self):
         if self.på_bakken == False:
            self.bilde = self.birk_hopp
            self.promp.play()
         elif self.på_bakken == True:
             self.bilde = self.birk_bilde
+    
+    def update_image_doomfist(self):
+        if self.på_bakken == False:
+           self.bilde = self.doom_hopp
+        elif self.på_bakken == True:
+            self.bilde = self.doom_bilde
+    
+    def update_image_herman(self):
+        if self.på_bakken == False:
+           self.bilde = self.herman_hopp
+        elif self.på_bakken == True:
+            self.bilde = self.herman_bilde

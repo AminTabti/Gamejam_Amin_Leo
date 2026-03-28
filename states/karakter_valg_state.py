@@ -48,16 +48,19 @@ class SelectionState(BaseState):
                     klikket_karakter = None
                     if self.start_box.collidepoint(event.pos):
                         klikket_karakter = "herman"
+                        pygame.mixer.stop()
                         for i in range (20):
                             self.herman_v1.play()
 
                     elif self.start_box2.collidepoint(event.pos):
                         klikket_karakter = "doomfist"
+                        pygame.mixer.stop()
                         for i in range (20):
                             self.doom_v1.play()
 
                     elif self.start_box3.collidepoint(event.pos):
                         klikket_karakter = "birk"
+                        pygame.mixer.stop()
                         for i in range (10):
                             self.feit_latter.play()
                             self.rap.play()
