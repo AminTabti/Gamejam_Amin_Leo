@@ -32,11 +32,11 @@ class GameState(BaseState):
         bilde2, bredde2, høyde2 = karakter_bilder[karakter2] # chat
 
         self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s}, 
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b}, 
         bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
         self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN}, 
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l}, 
         bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
         
     #----------Chat over------------------------
@@ -97,11 +97,12 @@ class Player(GameObject):
         self.navn = navn
         self.farge = farge
         self.font = pygame.font.SysFont("Times new roman", 200)
-
+        self.timer = 10000000  # fikk påmåte ideen fra chat, men brukte den på en annen måte
         self.speed = 7
         self.vy = 0
         self.på_bakken = False
-
+        self.birk_special_bool = False
+        self.birk_special_bool_ned = False
         self.antall_hopp = 0
         self.max_hopp = 2
         
@@ -111,15 +112,16 @@ class Player(GameObject):
 
         self.birk_bilde = self.Load_image("Birk_bein.png",(150,200))
         self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
+        self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
+        self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
+        self.promp = pygame.mixer.Sound("assets/promp.mp3")
+        self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
 
         self.doom_bilde = self.Load_image("Doomfist.png",(100,150))
         self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
 
         self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150))
         self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
-
-        self.promp = pygame.mixer.Sound("assets/promp.mp3")
-        self.Birk_grunt = pygame.mixer.Sound("assets/Herman_voice1.mp3")
 
         self.karakter = karakter
     
@@ -143,6 +145,17 @@ class Player(GameObject):
             self.rect.x -= self.speed #chat
         if keys[self.kontroller["right"]]: #chat
             self.rect.x += self.speed #chat
+        if keys[self.kontroller["special"]] and self.på_bakken == True:
+            self.timer = 80 
+            self.vy = -16
+            self.birk_special_bool = True
+            self.på_bakken = False
+       
+        if self.timer == 1:
+            self. vy = 40
+            self.birk_special_bool = False
+            self.birk_special_bool_ned = True
+
 
 #-------------- chat under ----------------------------------------------
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
@@ -174,6 +187,7 @@ class Player(GameObject):
                     self.rect.top = platform.bottom
                     self.vy = 0
                     self.på_bakken = False
+        self.timer -= 1
         
         if self.karakter == "birk":
             self.update_image_birk()
@@ -193,7 +207,11 @@ class Player(GameObject):
     def update_image_birk(self):
         if self.på_bakken == False:
            self.bilde = self.birk_hopp
-           self.promp.play()
+           self.Birk_grunt.play()
+        if self.birk_special_bool == True:
+            self.bilde = self.birk_special
+        if self.birk_special_bool_ned == True:
+            self.bilde = self.birk_special_ned
         elif self.på_bakken == True:
             self.bilde = self.birk_bilde
     
