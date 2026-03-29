@@ -3,9 +3,7 @@ Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc
 """
 import os
 from states.base_state import BaseState
-from states.karakter_valg_state import SelectionState
 import pygame
-from random import randint
 
 class GameState(BaseState):
     def __init__(self):
@@ -103,9 +101,7 @@ class Player(GameObject):
         self.på_bakken = False
 
         self.herman_special_bool = False
-        self.herman_special_bool_ned = False
         self.doom_special_bool = False
-        self.doom_special_bool_ned = False
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
 
@@ -162,6 +158,12 @@ class Player(GameObject):
             self.herman_special_bool = True
             self.på_bakken = False
             self.special_cooldown = 390  # mellom 6 og 7 sekunder :)
+            if self.karakter == "birk":
+                self.birk_special_bool = True
+            elif self.karakter == "doomfist":
+                self.doom_special_bool = True
+            elif self.karakter == "herman":
+                self.herman_special_bool = True
 
         self.special_cooldown -= 1
        
@@ -169,7 +171,6 @@ class Player(GameObject):
             self.vy = 40
             self.birk_special_bool = False
             self.birk_special_bool_ned = True
-
 
 #-------------- chat under ----------------------------------------------
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
@@ -196,6 +197,8 @@ class Player(GameObject):
                     self.vy = 0
                     self.på_bakken = True
                     self.antall_hopp = 0
+                    self.doom_special_bool = False
+                    self.herman_special_bool = False
 
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
