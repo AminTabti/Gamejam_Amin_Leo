@@ -101,8 +101,14 @@ class Player(GameObject):
         self.speed = 7
         self.vy = 0
         self.på_bakken = False
+
+        self.herman_special_bool = False
+        self.herman_special_bool_ned = False
+        self.doom_special_bool = False
+        self.doom_special_bool_ned = False
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
+
         self.special_cooldown = 0
         self.antall_hopp = 0
         self.max_hopp = 2
@@ -121,10 +127,11 @@ class Player(GameObject):
 
         self.doom_bilde = self.Load_image("Doomfist.png",(100,150))
         self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
+        self.doom_special = self.Load_image("doom_special.png",(150,200))
 
         self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150))
         self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
-
+        self.herman_special = self.Load_image("herman_special.png",(150,200))
         self.karakter = karakter
     
     def handle_event(self, event):
@@ -151,13 +158,15 @@ class Player(GameObject):
             self.timer = 80
             self.vy = -15
             self.birk_special_bool = True
+            self.doom_special_bool = True
+            self.herman_special_bool = True
             self.på_bakken = False
             self.special_cooldown = 390  # mellom 6 og 7 sekunder :)
 
         self.special_cooldown -= 1
        
         if self.timer == 1:
-            self. vy = 40
+            self.vy = 40
             self.birk_special_bool = False
             self.birk_special_bool_ned = True
 
@@ -218,15 +227,20 @@ class Player(GameObject):
             self.bilde = self.birk_special_ned
         if self.på_bakken == True:
             self.bilde = self.birk_bilde
+            self.birk_special_bool_ned = False
     
     def update_image_doomfist(self):
         if self.på_bakken == False:
            self.bilde = self.doom_hopp
-        elif self.på_bakken == True:
+        if self.doom_special_bool == True:
+            self.bilde = self.doom_special
+        if self.på_bakken == True:
             self.bilde = self.doom_bilde
     
     def update_image_herman(self):
         if self.på_bakken == False:
            self.bilde = self.herman_hopp
-        elif self.på_bakken == True:
+        if self.herman_special_bool == True:
+            self.bilde = self.herman_special
+        if self.på_bakken == True:
             self.bilde = self.herman_bilde
