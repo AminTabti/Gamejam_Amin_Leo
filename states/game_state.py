@@ -103,10 +103,12 @@ class Player(GameObject):
         self.på_bakken = False
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
+        self.special_cooldown = 0
         self.antall_hopp = 0
         self.max_hopp = 2
         
         self.kontroller = kontroller
+
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (bredde, høyde))
 
@@ -145,11 +147,14 @@ class Player(GameObject):
             self.rect.x -= self.speed #chat
         if keys[self.kontroller["right"]]: #chat
             self.rect.x += self.speed #chat
-        if keys[self.kontroller["special"]] and self.på_bakken == True:
-            self.timer = 80 
-            self.vy = -16
+        if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
+            self.timer = 80
+            self.vy = -15
             self.birk_special_bool = True
             self.på_bakken = False
+            self.special_cooldown = 390  # mellom 6 og 7 sekunder :)
+
+        self.special_cooldown -= 1
        
         if self.timer == 1:
             self. vy = 40
