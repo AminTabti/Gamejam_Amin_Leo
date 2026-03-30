@@ -30,11 +30,11 @@ class GameState(BaseState):
         bilde2, bredde2, høyde2 = karakter_bilder[karakter2] # chat
 
         self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b}, 
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b, "attack": pygame.K_f}, 
         bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
         self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l}, 
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack": pygame.K_k}, 
         bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
         
     #----------Chat over------------------------
@@ -104,7 +104,10 @@ class Player(GameObject):
         self.doom_special_bool = False
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
+        self.birk_attack_bool = False
 
+        self.birk_special_bool_lyd = False
+        
         self.special_cooldown = 0
         self.antall_hopp = 0
         self.max_hopp = 2
@@ -157,21 +160,27 @@ class Player(GameObject):
             self.doom_special_bool = True
             self.herman_special_bool = True
             self.på_bakken = False
-            self.special_cooldown = 390  # mellom 6 og 7 sekunder :)
+            self.special_cooldown = 390  # mellom 6 og 7 sekunder :) XD
             if self.karakter == "birk":
                 self.birk_special_bool = True
             elif self.karakter == "doomfist":
                 self.doom_special_bool = True
             elif self.karakter == "herman":
                 self.herman_special_bool = True
+        if keys[self.kontroller["attack"]]:
+            self.birk_attack_bool = True
 
         self.special_cooldown -= 1
        
         if self.timer == 1:
-            self.vy = 40
+            self.vy = 20
             self.birk_special_bool = False
             self.birk_special_bool_ned = True
-
+        if self.på_bakken == True:
+            self.birk_special_bool_ned = False
+            self.birk_special_bool_lyd = False
+            self.doom_special_bool = False
+            self.herman_special_bool = False    
 #-------------- chat under ----------------------------------------------
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
             if self.rect.colliderect(platform):
@@ -197,8 +206,8 @@ class Player(GameObject):
                     self.vy = 0
                     self.på_bakken = True
                     self.antall_hopp = 0
-                    self.doom_special_bool = False
-                    self.herman_special_bool = False
+
+                    
 
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
@@ -207,7 +216,8 @@ class Player(GameObject):
         self.timer -= 1
         
         if self.karakter == "birk":
-            self.update_image_birk()
+            self.update_image_Birk()
+            self.update_sound_Birk()
         if self.karakter == "doomfist":
             self.update_image_doomfist()
         if self.karakter == "herman":
@@ -219,18 +229,19 @@ class Player(GameObject):
             image = pygame.transform.scale(image,scale)
         return image
     
-    def update_image_birk(self):
+    def update_image_Birk(self):
         if self.på_bakken == False:
            self.bilde = self.birk_hopp
-           self.promp.play()
-           self.Birk_grunt.play()
         if self.birk_special_bool == True:
             self.bilde = self.birk_special
         if self.birk_special_bool_ned == True:
             self.bilde = self.birk_special_ned
         if self.på_bakken == True:
             self.bilde = self.birk_bilde
-            self.birk_special_bool_ned = False
+
+        if self.birk_attack_bool == True:
+            pass
+            #self.bilde = self.birk
     
     def update_image_doomfist(self):
         if self.på_bakken == False:
@@ -247,3 +258,8 @@ class Player(GameObject):
             self.bilde = self.herman_special
         if self.på_bakken == True:
             self.bilde = self.herman_bilde
+
+    def update_sound_Birk(self):
+        if self.birk_special_bool == True and self.birk_special_bool_lyd == False:
+            self.Birk_grunt.play()
+            self.birk_special_bool_lyd = True
