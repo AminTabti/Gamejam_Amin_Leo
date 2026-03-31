@@ -72,20 +72,24 @@ class GameState(BaseState):
 
         if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff:
             self.player2.hp += 5
+            self.player2.knockback(self.player1.attack_retning, self.player2.hp)
             self.player1.melee_traff = True #<-- chat hjalp med hvordan treffe bare en gang
 
         if self.player2.melee_rect and self.player2.melee_rect.colliderect(self.player1.rect) and not self.player2.melee_traff:
             self.player1.hp += 5
+            self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
         if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool_ned or self.player1.herman_special_bool_ned) and not self.player1.special_traff:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 20
+                self.player2.knockback(self.player1.attack_retning, self.player2.hp)
                 self.player1.special_traff = True
 
         if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool_ned or self.player2.herman_special_bool_ned) and not self.player2.special_traff:
             if self.player2.rect.colliderect(self.player1.rect):
                 self.player1.hp += 20
+                self.player1.knockback(self.player2.attack_retning, self.player1.hp)
                 self.player2.special_traff = True
 
     def draw(self, surface: pygame.Surface):
@@ -167,6 +171,12 @@ class Player(GameObject):
         self.melee_attack_varer = 0
         self.special_traff = False
         self.melee_traff = False
+        self.knockback_siden = 0
+    
+    def knockback(self, retning, damage):
+        styrke = 4 + damage * 0.9  # mer jo mer % man har. brukte chat for hvordan kalulasjonene skulle gjøres
+        self.knockback_siden = styrke * retning
+        self.vy = -(0.5 + damage * 0.05)
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -196,6 +206,13 @@ class Player(GameObject):
         if keys[self.kontroller["right"]]: #chat
             self.rect.x += self.speed #chat
             self.attack_retning = 1
+        
+        #----------chat under------------ knockback er vanskelig å jobbe med
+        self.rect.x += self.knockback_siden
+        self.knockback_siden *= 0.85
+        if abs(self.knockback_siden) < 0.3:
+            self.knockback_siden = 0
+        #------- chat over--------------
 
         self.attack_cooldown -= 1 #vet at den går til minus men det har ingenting å si
 
