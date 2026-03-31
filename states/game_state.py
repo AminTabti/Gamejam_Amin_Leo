@@ -308,7 +308,9 @@ class Player(GameObject):
             self.update_image_doomfist()
         if self.karakter == "herman":
             self.update_image_herman()
-
+        
+        if self.rect.x > 1500 or self.rect.x < -1500 or self.rect.y > 800:
+            self.promp.play()
     def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
         image = pygame.image.load(os.path.join("assets",bilde_navn))
         if scale is not None:

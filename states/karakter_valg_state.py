@@ -49,13 +49,13 @@ class SelectionState(BaseState):
                     if self.start_box.collidepoint(event.pos):
                         klikket_karakter = "herman"
                         pygame.mixer.stop()
-                        for i in range (20):
+                        for i in range (2):
                             self.herman_v1.play()
 
                     elif self.start_box2.collidepoint(event.pos):
                         klikket_karakter = "doomfist"
                         pygame.mixer.stop()
-                        for i in range (20):
+                        for i in range (2):
                             self.doom_v1.play()
 
                     elif self.start_box3.collidepoint(event.pos):
@@ -64,7 +64,7 @@ class SelectionState(BaseState):
                         for i in range (10):
                             self.feit_latter.play()
                             self.rap.play()
-                            self.promp.play()
+                        self.promp.play()
 
                     if klikket_karakter:
                         if not self.selection_player1: # fant ikke en bedre måte
