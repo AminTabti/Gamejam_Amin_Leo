@@ -29,15 +29,17 @@ class GameState(BaseState):
         bilde1, bredde1, høyde1 = karakter_bilder[karakter1] # chat
         bilde2, bredde2, høyde2 = karakter_bilder[karakter2] # chat
 
+        self.hp_bar_font = pygame.font.SysFont("Times new roman", 80, bold = True)
+
+#------------ Chat under-----------------------------------------------
         self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b}, 
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b, "attack" : pygame.K_v}, 
         bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
         self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l}, 
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack" : pygame.K_m}, 
         bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
-        
-    #----------Chat over------------------------
+    #----------Chat over-----------------------------------
 
 
     def handle_events(self, events : list[pygame.event.Event]):
@@ -68,12 +70,36 @@ class GameState(BaseState):
         self.player1.update()
         self.player2.update()
 
+        if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff:
+            self.player2.hp += 5
+            self.player1.melee_traff = True #<-- chat hjalp med hvordan treffe bare en gang
+
+        if self.player2.melee_rect and self.player2.melee_rect.colliderect(self.player1.rect) and not self.player2.melee_traff:
+            self.player1.hp += 5
+            self.player2.melee_traff = True
+
+        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool_ned or self.player1.herman_special_bool_ned) and not self.player1.special_traff:
+            if self.player1.rect.colliderect(self.player2.rect):
+                self.player2.hp += 20
+                self.player1.special_traff = True
+
+        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool_ned or self.player2.herman_special_bool_ned) and not self.player2.special_traff:
+            if self.player2.rect.colliderect(self.player1.rect):
+                self.player1.hp += 20
+                self.player2.special_traff = True
+
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakgrunn, (0,0))
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2)
         pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
         self.player1.draw(surface)
         self.player2.draw(surface)
+
+        p1_tekst = self.hp_bar_font.render(f"{int(self.player1.hp)}%", True, self.player1.farge)
+        surface.blit(p1_tekst, (100, 600))
+
+        p2_tekst = self.hp_bar_font.render(f"{int(self.player2.hp)}%", True, self.player2.farge)
+        surface.blit(p2_tekst, (1100, 600))
 
 class GameObject:
     def __init__(self, x, y, bredde, høyde):
@@ -101,7 +127,11 @@ class Player(GameObject):
         self.på_bakken = False
 
         self.herman_special_bool = False
+        self.herman_special_bool_ned = False
+        
         self.doom_special_bool = False
+        self.doom_special_bool_ned = False
+
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
 
@@ -129,6 +159,14 @@ class Player(GameObject):
         self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
         self.herman_special = self.Load_image("herman_special.png",(150,200))
         self.karakter = karakter
+
+        self.hp = 0
+        self.attack_retning = 1 #<-- chat på denne
+        self.attack_cooldown = 0
+        self.melee_rect = None  # <- chat
+        self.melee_attack_varer = 0
+        self.special_traff = False
+        self.melee_traff = False
     
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
@@ -138,24 +176,43 @@ class Player(GameObject):
                     self.på_bakken = False
                     self.antall_hopp += 1
 
+            if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
+                self.attack_cooldown = 45
+                self.melee_attack_varer = 15
+
     def draw(self, screen):
         screen.blit(self.bilde, self.rect)
         tekst = self.font.render(self.navn, True, self.farge)
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
+        if self.melee_rect:
+            pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
 
     def update(self):
         keys = pygame.key.get_pressed()
 
         if keys[self.kontroller["left"]]: # chat
             self.rect.x -= self.speed #chat
+            self.attack_retning = -1
         if keys[self.kontroller["right"]]: #chat
             self.rect.x += self.speed #chat
+            self.attack_retning = 1
+
+        self.attack_cooldown -= 1 #vet at den går til minus men det har ingenting å si
+
+        if self.melee_attack_varer > 0: #hvor lenge attacket varer
+            self.melee_attack_varer -= 1
+            if self.attack_retning == 1:
+                self.melee_rect = pygame.Rect(self.rect.right, self.rect.centery - 100, 100, 200)
+            else:
+                self.melee_rect = pygame.Rect(self.rect.left - 100, self.rect.centery - 100, 100, 200)
+        else:
+            self.melee_rect = None
+            self.melee_traff = False
+
+
         if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
             self.timer = 80
             self.vy = -15
-            self.birk_special_bool = True
-            self.doom_special_bool = True
-            self.herman_special_bool = True
             self.på_bakken = False
             self.special_cooldown = 390  # mellom 6 og 7 sekunder :)
             if self.karakter == "birk":
@@ -169,8 +226,15 @@ class Player(GameObject):
        
         if self.timer == 1:
             self.vy = 40
-            self.birk_special_bool = False
-            self.birk_special_bool_ned = True
+            if self.karakter == "birk":
+                self.birk_special_bool = False
+                self.birk_special_bool_ned = True
+            elif self.karakter == "doomfist":
+                self.doom_special_bool = False
+                self.doom_special_bool_ned = True
+            elif self.karakter == "herman":
+                self.herman_special_bool = False
+                self.herman_special_bool_ned = True
 
 #-------------- chat under ----------------------------------------------
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
@@ -197,8 +261,12 @@ class Player(GameObject):
                     self.vy = 0
                     self.på_bakken = True
                     self.antall_hopp = 0
+                    self.birk_special_bool_ned = False
                     self.doom_special_bool = False
+                    self.doom_special_bool_ned = False
                     self.herman_special_bool = False
+                    self.herman_special_bool_ned = False
+                    self.special_traff = False
 
                 elif self.vy < 0:
                     self.rect.top = platform.bottom
