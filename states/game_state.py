@@ -131,9 +131,13 @@ class Player(GameObject):
         self.farge = farge
         self.font = pygame.font.SysFont("Times new roman", 200)
         self.timer = 10000000  # fikk påmåte ideen fra chat, men brukte den på en annen måte
+        self.timer_død = 0
         self.speed = 7
         self.vy = 0
+        self.død_x = 0
+        self.død_y = 0
         self.på_bakken = False
+        self.død = False
 
         self.herman_special_bool = False
         self.herman_special_bool_ned = False
@@ -179,6 +183,8 @@ class Player(GameObject):
         self.melee_attack_varer = 0
         self.special_traff = False
         self.melee_traff = False
+        
+
         self.knockback_siden = 0
 
         self.liv = 3
@@ -217,8 +223,11 @@ class Player(GameObject):
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
         if self.melee_rect:
             pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
+        if self.død == True:
+            pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
 
     def update(self):
+        
         keys = pygame.key.get_pressed()
 
         if keys[self.kontroller["left"]]: # chat
@@ -250,7 +259,7 @@ class Player(GameObject):
 
         if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
             self.timer = 80
-            self.vy = -15
+            self.vy = -18
             self.på_bakken = False
             self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
             if self.karakter == "birk":
@@ -319,6 +328,10 @@ class Player(GameObject):
                     self.vy = 0
                     self.på_bakken = False
         self.timer -= 1
+        if self.timer_død > 1: #måtte få hjelp av chat, etter at jeg satt fast litt
+            self.timer_død -= 1
+        else:
+            self.død = False
         
         if self.karakter == "birk":
             self.update_image_Birk()
@@ -328,9 +341,15 @@ class Player(GameObject):
         if self.karakter == "herman":
             self.update_image_herman()
         
+        if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
+            self.død_x = self.rect.x
+            self.død_y = self.rect.y
         if self.rect.x > 1500 or self.rect.x < -200 or self.rect.y > 800:
             self.promp.play()
             self.liv -= 1
+            self.død = True
+            self.timer_død = 120
+            
             if self.liv <= 0:
                 self.game.next_state = "END"
                 self.game.done = True
