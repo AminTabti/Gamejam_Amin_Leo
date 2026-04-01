@@ -7,6 +7,7 @@ from states.base_state import BaseState
 from states.menu_state import MenuState
 from states.game_state import GameState
 from states.pause_state import PauseState
+from states.endscreen_state import EndState
 from states.karakter_valg_state import SelectionState
 
 class Spill:
@@ -20,7 +21,8 @@ class Spill:
             "MENU": MenuState(),
             "GAME": GameState(),
             "PAUSE": PauseState(),
-            "SELECTION": SelectionState()
+            "SELECTION": SelectionState(),
+            "END": EndState()
         }
         self.current_state = self.states["MENU"]
         self.current_state.start_musikk()

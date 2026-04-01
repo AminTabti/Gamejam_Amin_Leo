@@ -69,6 +69,7 @@ class GameState(BaseState):
     def update(self, dt: float):
         self.player1.update()
         self.player2.update()
+        
 
         if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff:
             self.player2.hp += 5
@@ -174,7 +175,9 @@ class Player(GameObject):
         self.melee_attack_varer = 0
         self.special_traff = False
         self.melee_traff = False
+        End_bool = False
         self.knockback_siden = 0
+        
     
     def knockback(self, retning, damage):
         styrke = 4 + damage * 0.9  # mer jo mer % man har. brukte chat for hvordan kalulasjonene skulle gjøres
@@ -234,7 +237,7 @@ class Player(GameObject):
             self.timer = 80
             self.vy = -15
             self.på_bakken = False
-            self.special_cooldown = 390  # mellom 6 og 7 sekunder :) XD
+            self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
             if self.karakter == "birk":
                 self.birk_special_bool = True
             elif self.karakter == "doomfist":
@@ -311,6 +314,8 @@ class Player(GameObject):
         
         if self.rect.x > 1500 or self.rect.x < -1500 or self.rect.y > 800:
             self.promp.play()
+            self.game.next_state = "END"
+            self.game.done = True
     def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
         image = pygame.image.load(os.path.join("assets",bilde_navn))
         if scale is not None:
