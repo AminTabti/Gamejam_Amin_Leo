@@ -102,9 +102,13 @@ class GameState(BaseState):
 
         p1_tekst = self.hp_bar_font.render(f"{int(self.player1.hp)}%", True, self.player1.farge)
         surface.blit(p1_tekst, (100, 600))
-
         p2_tekst = self.hp_bar_font.render(f"{int(self.player2.hp)}%", True, self.player2.farge)
         surface.blit(p2_tekst, (1100, 600))
+
+        for i in range(self.player1.liv): #brukte chat på hvordan tegne livene
+            pygame.draw.circle(surface, self.player1.farge, (100 + i * 35, 580), 12)
+        for i in range(self.player2.liv):
+            pygame.draw.circle(surface, self.player2.farge, (1100 + i * 35, 580), 12)
 
 class GameObject:
     def __init__(self, x, y, bredde, høyde):
@@ -175,8 +179,19 @@ class Player(GameObject):
         self.melee_attack_varer = 0
         self.special_traff = False
         self.melee_traff = False
-        End_bool = False
         self.knockback_siden = 0
+
+        self.liv = 3
+        self.spawn_x = x
+        self.spawn_y = y
+    
+    def respawn(self):
+        self.rect.x = self.spawn_x
+        self.rect.y = self.spawn_y
+        self.hp = 0
+        self.vy = 0
+        self.knockback_siden = 0
+        self.på_bakken = False
         
     
     def knockback(self, retning, damage):
@@ -260,7 +275,7 @@ class Player(GameObject):
             elif self.karakter == "herman":
                 self.herman_special_bool = False
                 self.herman_special_bool_ned = True
-                
+
         if self.på_bakken == True:
             self.birk_special_bool_ned = False
             self.birk_special_bool_lyd = False
@@ -313,10 +328,15 @@ class Player(GameObject):
         if self.karakter == "herman":
             self.update_image_herman()
         
-        if self.rect.x > 1500 or self.rect.x < -1500 or self.rect.y > 800:
+        if self.rect.x > 1500 or self.rect.x < -200 or self.rect.y > 800:
             self.promp.play()
-            self.game.next_state = "END"
-            self.game.done = True
+            self.liv -= 1
+            if self.liv <= 0:
+                self.game.next_state = "END"
+                self.game.done = True
+            else:
+                self.respawn()
+
     def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
         image = pygame.image.load(os.path.join("assets",bilde_navn))
         if scale is not None:
