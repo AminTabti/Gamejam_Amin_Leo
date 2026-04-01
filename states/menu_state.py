@@ -12,7 +12,7 @@ class MenuState(BaseState):
         self.bakrund_load =  pygame.image.load("assets/main_menu_bilde.png").convert()
         self.screen = pygame.display.set_mode((0, 0),pygame.RESIZABLE)
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1370, 700))
-        self.start_box = pygame.Rect(0, 62, 637, 343) #x, y, bredde 590, høyde
+        self.start_box = pygame.Rect(0, 62, 670, 343) #x, y, bredde 590, høyde
 
     def start_musikk(self):
         a1 = randint(1,5)
