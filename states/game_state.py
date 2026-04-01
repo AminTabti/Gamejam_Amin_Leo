@@ -254,17 +254,18 @@ class Player(GameObject):
             if self.karakter == "birk":
                 self.birk_special_bool = False
                 self.birk_special_bool_ned = True
+            elif self.karakter == "doomfist":
+                self.doom_special_bool = False
+                self.doom_special_bool_ned = True
+            elif self.karakter == "herman":
+                self.herman_special_bool = False
+                self.herman_special_bool_ned = True
+                
         if self.på_bakken == True:
             self.birk_special_bool_ned = False
             self.birk_special_bool_lyd = False
             self.doom_special_bool = False
             self.herman_special_bool = False              
-        elif self.karakter == "doomfist":
-            self.doom_special_bool = False
-            self.doom_special_bool_ned = True
-        elif self.karakter == "herman":
-            self.herman_special_bool = False
-            self.herman_special_bool_ned = True
 
 #-------------- chat under ----------------------------------------------
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken
