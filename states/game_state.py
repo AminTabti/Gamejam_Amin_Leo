@@ -328,9 +328,12 @@ class Player(GameObject):
                     self.vy = 0
                     self.på_bakken = False
         self.timer -= 1
-        if self.timer_død > 1: #måtte få hjelp av chat, etter at jeg satt fast litt
+
+        if self.timer_død > 1:  # fikk hjep av claude, etter at jeg satt fast lenge med hvordan boksen skulle gå bort(og mer bla bla)
             self.timer_død -= 1
         else:
+            if self.død == True:       
+                self.respawn()
             self.død = False
         
         if self.karakter == "birk":
@@ -345,18 +348,21 @@ class Player(GameObject):
             self.død_x = self.rect.x
             self.død_y = self.rect.y
         if self.rect.x > 1500 or self.rect.x < -200 or self.rect.y > 800:
-            self.promp.play()
-            self.liv -= 1
-            self.død = True
-            self.timer_død = 120
+            if self.død == False: # gjør at den bare kjører en gang
+                self.promp.play()
+                self.liv -= 1
+                self.død = True
+                self.timer_død = 120
             
             if self.liv <= 0:
                 self.game.next_state = "END"
                 self.game.done = True
             else:
-                self.respawn()
+                pass
 
-    def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide denne også 
+           
+
+    def Load_image(self,bilde_navn,scale=None): # https://www.youtube.com/watch?v=u7XpkyemKTo for guide 
         image = pygame.image.load(os.path.join("assets",bilde_navn))
         if scale is not None:
             image = pygame.transform.scale(image,scale)
