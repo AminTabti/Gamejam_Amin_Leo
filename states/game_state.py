@@ -81,13 +81,13 @@ class GameState(BaseState):
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
-        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool_ned or self.player1.herman_special_bool_ned) and not self.player1.special_traff:
+        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool_ned) and not self.player1.special_traff:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 20
                 self.player2.knockback(self.player1.attack_retning, self.player2.hp)
                 self.player1.special_traff = True
 
-        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool_ned or self.player2.herman_special_bool_ned) and not self.player2.special_traff:
+        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool or self.player2.herman_special_bool_ned) and not self.player2.special_traff:
             if self.player2.rect.colliderect(self.player1.rect):
                 self.player1.hp += 20
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
@@ -134,6 +134,7 @@ class Player(GameObject):
         self.timer_død = 0
         self.speed = 7
         self.vy = 0
+        self.vx = 0
         self.død_x = 0
         self.død_y = 0
         self.på_bakken = False
@@ -143,7 +144,6 @@ class Player(GameObject):
         self.herman_special_bool_ned = False
         
         self.doom_special_bool = False
-        self.doom_special_bool_ned = False
 
         self.birk_special_bool = False
         self.birk_special_bool_ned = False
@@ -164,6 +164,7 @@ class Player(GameObject):
         self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
         self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
         self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
+        self.birk_attack = self.Load_image("attack_animation_Birk.png",(150,200))
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
 
@@ -259,15 +260,20 @@ class Player(GameObject):
 
         if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
             self.timer = 80
-            self.vy = -18
+            
             self.på_bakken = False
             self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
             if self.karakter == "birk":
+                self.vy = -18                
                 self.birk_special_bool = True
             elif self.karakter == "doomfist":
+                self.vx = 20
                 self.doom_special_bool = True
+                
             elif self.karakter == "herman":
+                self.vy = -18
                 self.herman_special_bool = True
+                
         if keys[self.kontroller["attack"]]:
             self.birk_attack_bool = True
 
@@ -280,7 +286,6 @@ class Player(GameObject):
                 self.birk_special_bool_ned = True
             elif self.karakter == "doomfist":
                 self.doom_special_bool = False
-                self.doom_special_bool_ned = True
             elif self.karakter == "herman":
                 self.herman_special_bool = False
                 self.herman_special_bool_ned = True
@@ -288,7 +293,7 @@ class Player(GameObject):
         if self.på_bakken == True:
             self.birk_special_bool_ned = False
             self.birk_special_bool_lyd = False
-            self.doom_special_bool = False
+            #self.doom_special_bool = False
             self.herman_special_bool = False              
 
 #-------------- chat under ----------------------------------------------
@@ -307,7 +312,10 @@ class Player(GameObject):
                 self.rect.y += 5
     
         self.vy += 0.35
+        if self.vx > 0:
+            self.vx -= 0.2
         self.rect.y += self.vy
+        self.rect.x += self.vx
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: # hjelp fra chat men skrevet selv
             if self.rect.colliderect(platform):
@@ -318,7 +326,6 @@ class Player(GameObject):
                     self.antall_hopp = 0
                     self.birk_special_bool_ned = False
 
-                    self.doom_special_bool_ned = False
                     
                     self.herman_special_bool_ned = False
                     self.special_traff = False
@@ -378,9 +385,8 @@ class Player(GameObject):
         if self.på_bakken == True:
             self.bilde = self.birk_bilde
 
-        if self.birk_attack_bool == True:
-            pass
-            #self.bilde = self.birk
+        if self.melee_attack_varer > 0:
+            self.bilde = self.birk_attack
     
     def update_image_doomfist(self):
         if self.på_bakken == False:
