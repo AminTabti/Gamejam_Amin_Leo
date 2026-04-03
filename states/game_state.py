@@ -282,7 +282,7 @@ class Player(GameObject):
                 self.birk_special_bool = True
 
             elif self.karakter == "doomfist":
-                self.vx = 20
+                self.vx = 35
                 self.doom_special_bool = True
                 
             elif self.karakter == "herman":
@@ -336,10 +336,7 @@ class Player(GameObject):
         self.vy += 0.35
 
 
-        if self.vx > 0:
-            self.vx -= 0.2
-        elif self.vx < 0:
-            self.vx = 0
+        self.vx *= 0.93
 
 
         self.rect.y += self.vy
