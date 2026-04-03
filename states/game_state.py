@@ -338,6 +338,8 @@ class Player(GameObject):
 
         if self.vx > 0:
             self.vx -= 0.2
+        elif self.vx < 0:
+            self.vx = 0
 
 
         self.rect.y += self.vy
