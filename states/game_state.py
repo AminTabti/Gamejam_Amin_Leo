@@ -157,12 +157,15 @@ class Player(GameObject):
         self.melee_attack_varer = 0
         self.melee_traff = False
         self.knockback_siden = 0
+        self.charge_timer = 0
 
         self.special_traff = False
         self.special_cooldown = 0
         self.herman_special_bool = False # herman
         self.herman_special_bool_ned = False
         self.doom_special_bool = False # Doom
+        self.doom_special_bool_lyd = False
+        
         self.birk_special_bool = False # Birk
         self.birk_special_bool_ned = False
         self.birk_attack_bool = False
@@ -199,6 +202,7 @@ class Player(GameObject):
 
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
+        self.doom_punch = pygame.mixer.Sound("assets/Rocket-punch.ogg")
 
 
     def handle_event(self, event):
@@ -273,25 +277,32 @@ class Player(GameObject):
 
 
         if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
-            self.timer = 80
-            self.på_bakken = False
-            self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
+             # mellom 6 og 7 sekunder :) XD
 
             if self.karakter == "birk":
                 self.vy = -18                
                 self.birk_special_bool = True
-
-            elif self.karakter == "doomfist":
-                self.vx = 35
-                self.doom_special_bool = True
+                self.timer = 80
+                self.på_bakken = False
+                self.special_cooldown = 100 
+            
                 
             elif self.karakter == "herman":
                 self.vy = -18
                 self.herman_special_bool = True
+                self.timer = 80
+                self.på_bakken = False
+                self.special_cooldown = 100 
                 
-        if keys[self.kontroller["attack"]]:
-            self.birk_attack_bool = True
-
+        if keys[self.kontroller["special"]] and self.karakter == "doomfist" and self.special_cooldown <= 0:
+            self.charge_timer += 1
+            if self.charge_timer >= 60:
+                self.timer = 80
+                self.vx = 35
+                self.doom_special_bool = True
+                self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
+        else:
+            self.charge_timer = 0
 
         self.special_cooldown -= 1
        
@@ -374,10 +385,11 @@ class Player(GameObject):
         
         if self.karakter == "birk":
             self.update_image_Birk()
-            self.update_sound_Birk()
+            self.update_lyd_Birk()
 
         if self.karakter == "doomfist":
             self.update_image_doomfist()
+            self.update_lyd_doomfist()
 
         if self.karakter == "herman":
             self.update_image_herman()
@@ -434,7 +446,7 @@ class Player(GameObject):
         if self.doom_special_bool == True:
             self.bilde = self.doom_special
 
-        if self.på_bakken == True:
+        if self.på_bakken == True and self.doom_special_bool == False:
             self.bilde = self.doom_bilde
     
 
@@ -449,7 +461,11 @@ class Player(GameObject):
             self.bilde = self.herman_bilde
 
 
-    def update_sound_Birk(self):
+    def update_lyd_Birk(self):
         if self.birk_special_bool == True and self.birk_special_bool_lyd == False:
             self.Birk_grunt.play()
             self.birk_special_bool_lyd = True
+    def update_lyd_doomfist(self):
+        if self.doom_special_bool == True and self.doom_special_bool_lyd == False:
+            self.doom_punch.play()
+            self.doom_special_bool_lyd = True
