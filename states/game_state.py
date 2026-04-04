@@ -243,6 +243,9 @@ class Player(GameObject):
 
         if self.død == True:
             pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
+        if self.herman_special_bool == True:
+            pass
+            #pygame.draw.rect(screen, (255,165, 0),)
 
 
     def update(self):
@@ -469,3 +472,5 @@ class Player(GameObject):
         if self.doom_special_bool == True and self.doom_special_bool_lyd == False:
             self.doom_punch.play()
             self.doom_special_bool_lyd = True
+    def update_lyd_Herman(self):
+        pass
