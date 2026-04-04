@@ -33,11 +33,11 @@ class GameState(BaseState):
 
 #------------ Chat under-----------------------------------------------
         self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b, "attack" : pygame.K_v, "attack": pygame.K_f}, 
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b, "attack" : pygame.K_v, "attack": pygame.K_f, "Dodge" : pygame.K_SPACE}, 
         bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
         self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack" : pygame.K_m, "attack": pygame.K_k}, 
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack" : pygame.K_m, "attack": pygame.K_k, "Dodge" : pygame.K_RCTRL}, 
         bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
     #----------Chat over-----------------------------------
 
@@ -71,23 +71,23 @@ class GameState(BaseState):
         self.player2.update()
         
 
-        if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff:
+        if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff and not self.player2.invincibility:
             self.player2.hp += 5
             self.player2.knockback(self.player1.attack_retning, self.player2.hp)
             self.player1.melee_traff = True #<-- chat hjalp med hvordan treffe bare en gang
 
-        if self.player2.melee_rect and self.player2.melee_rect.colliderect(self.player1.rect) and not self.player2.melee_traff:
+        if self.player2.melee_rect and self.player2.melee_rect.colliderect(self.player1.rect) and not self.player2.melee_traff and not self.player1.invincibility:
             self.player1.hp += 5
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
-        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool_ned) and not self.player1.special_traff:
+        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool_ned) and not self.player1.special_traff and not self.player2.invincibility:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 20
                 self.player2.knockback(self.player1.attack_retning, self.player2.hp)
                 self.player1.special_traff = True
 
-        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool or self.player2.herman_special_bool_ned) and not self.player2.special_traff:
+        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool or self.player2.herman_special_bool_ned) and not self.player2.special_traff and not self.player1.invincibility:
             if self.player2.rect.colliderect(self.player1.rect):
                 self.player1.hp += 20
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
@@ -149,6 +149,10 @@ class Player(GameObject):
         self.antall_hopp = 0
         self.max_hopp = 2
         self.kontroller = kontroller
+
+        self.invincibility = False
+        self.dodge_cooldown = 0
+        self.dodge_frames = 0
 
         #Attacks & special
         self.attack_retning = 1 #<-- chat på denne
@@ -215,7 +219,16 @@ class Player(GameObject):
 
             if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
                 self.attack_cooldown = 45
-                self.melee_attack_varer = 15
+                self.melee_attack_varer = 5
+            
+            if event.key == self.kontroller["Dodge"] and self.dodge_cooldown <= 0 and self.knockback_siden == 0:
+                self.invincibility = True
+                self.dodge_frames = 20
+                self.dodge_cooldown = 120
+                if self.attack_retning == 1:
+                    self.knockback_siden = 18
+                else:
+                    self.knockback_siden = -18
 
 
     def respawn(self):
@@ -258,13 +271,20 @@ class Player(GameObject):
             self.rect.x += self.speed
             self.attack_retning = 1
         
-
+        #knockback
         self.rect.x += self.knockback_siden # Denne blokken er hovedsaklig Chat
         self.knockback_siden *= 0.85
         if abs(self.knockback_siden) < 0.3:
             self.knockback_siden = 0
 
+        #dodge
+        if self.dodge_frames > 0:
+            self.dodge_frames -= 1
+        else:
+            self.invincibility = False
 
+
+        self.dodge_cooldown -= 1
         self.attack_cooldown -= 1 #vet at den går til minus men det har ingenting å si
 
 
