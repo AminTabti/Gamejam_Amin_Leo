@@ -207,6 +207,7 @@ class Player(GameObject):
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
         self.doom_punch = pygame.mixer.Sound("assets/Rocket-punch.ogg")
+        self.dash_lyd = pygame.mixer.Sound("assets/dash_lyd.mp3")
 
 
     def handle_event(self, event):
@@ -225,6 +226,7 @@ class Player(GameObject):
                 self.invincibility = True
                 self.dodge_frames = 20
                 self.dodge_cooldown = 120
+                self.dash_lyd.play()
                 if self.attack_retning == 1:
                     self.knockback_siden = 18
                 else:
