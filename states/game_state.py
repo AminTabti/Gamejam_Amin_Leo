@@ -195,6 +195,7 @@ class Player(GameObject):
         self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
         self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
         self.birk_attack = self.Load_image("attack_animation_Birk.png",(150,200))
+        self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100,25))
 
         self.doom_bilde = self.Load_image("Doomfist.png",(100,150)) # Doom
         self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
@@ -220,7 +221,7 @@ class Player(GameObject):
 
             if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
                 self.attack_cooldown = 45
-                self.melee_attack_varer = 5
+                self.melee_attack_varer = 20
             
             if event.key == self.kontroller["Dodge"] and self.dodge_cooldown <= 0 and self.knockback_siden == 0:
                 self.invincibility = True
@@ -250,11 +251,13 @@ class Player(GameObject):
 
     def draw(self, screen):
         screen.blit(self.bilde, self.rect)
+        
         tekst = self.font.render(self.navn, True, self.farge)
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
 
         if self.melee_rect:
             pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
+            screen.blit(self.birk_attack_arm,self.melee_rect)
 
         if self.død == True:
             pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
@@ -293,15 +296,15 @@ class Player(GameObject):
         if self.melee_attack_varer > 0: #hvor lenge attacket varer
             self.melee_attack_varer -= 1
             if self.attack_retning == 1:
-                self.melee_rect = pygame.Rect(self.rect.right, self.rect.centery - 100, 100, 200)
+                self.melee_rect = pygame.Rect(self.rect.right, self.rect.centery-70, 100, 25)
             else:
-                self.melee_rect = pygame.Rect(self.rect.left - 100, self.rect.centery - 100, 100, 200)
+                self.melee_rect = pygame.Rect(self.rect.left - 100, self.rect.centery-70, 100, 25)
         else:
             self.melee_rect = None
             self.melee_traff = False
 
 
-        if keys[self.kontroller["special"]] and self.på_bakken == True and self.special_cooldown <= 0:
+        if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
              # mellom 6 og 7 sekunder :) XD
 
             if self.karakter == "birk":
