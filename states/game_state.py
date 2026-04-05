@@ -225,7 +225,7 @@ class Player(GameObject):
             
             if event.key == self.kontroller["Dodge"] and self.dodge_cooldown <= 0 and self.knockback_siden == 0:
                 self.invincibility = True
-                self.dodge_frames = 20
+                self.dodge_frames = 25
                 self.dodge_cooldown = 120
                 self.dash_lyd.play()
                 if self.attack_retning == 1:
