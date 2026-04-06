@@ -8,8 +8,21 @@ import pygame
 class EndState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("assets/Birk_vinner_over_herman.png").convert()
+
+    def startup(self, persistent):
+        self.persist = persistent
+
+        vinner_bilder = {
+            "herman": ("assets/herman_vinner.png"),
+            "doomfist": ("assets/doomfist_vinner.png"),
+            "birk":  ("assets/birk_vinner.png"),
+            }
+        
+        vinner = persistent.get("vinner", "birk")
+        self.vinner_navn = vinner
+        self.bakrund_load = pygame.image.load(vinner_bilder[vinner]).convert() #chat ga ideen for: [vinner]
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1300, 700))
+        
 
     def start_musikk(self):
         pygame.mixer.music.load("assets/Birk_theme.mp3")
@@ -31,5 +44,5 @@ class EndState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakrund, (0,0))
-        self.draw_text(surface, "Børk", 
-                       pygame.font.SysFont("Algerian", 40, italic = True), (255, 255, 255), (600, 300))
+        #self.draw_text(surface, self.vinner_navn, 
+                       #pygame.font.SysFont("Algerian", 40, italic = True), (255, 255, 255), (600, 300))

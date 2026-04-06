@@ -435,10 +435,14 @@ class Player(GameObject):
                 self.timer_død = 120
             
             if self.liv <= 0:
-                self.game.next_state = "END"
-                self.game.done = True
-            else:
-                pass
+                if self.game.player1 == self: # <--chat hjalp med denne linjen
+                    self.game.persist["vinner"] = self.game.player2.karakter
+                    self.game.next_state = "END"
+                    self.game.done = True
+                else:
+                    self.game.persist["vinner"] = self.game.player1.karakter
+                    self.game.next_state = "END"
+                    self.game.done = True 
 
 
 
@@ -493,9 +497,11 @@ class Player(GameObject):
         if self.birk_special_bool == True and self.birk_special_bool_lyd == False:
             self.Birk_grunt.play()
             self.birk_special_bool_lyd = True
+
     def update_lyd_doomfist(self):
         if self.doom_special_bool == True and self.doom_special_bool_lyd == False:
             self.doom_punch.play()
             self.doom_special_bool_lyd = True
+
     def update_lyd_Herman(self):
         pass
