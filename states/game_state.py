@@ -195,15 +195,20 @@ class Player(GameObject):
         self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
         self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
         self.birk_attack = self.Load_image("attack_animation_Birk.png",(150,200))
-        self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100,25))
+        self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100, 50))
+        self.birk_attack_arm_v = self.Load_image("Birk_attack_arm_v.png",(100, 50))
 
         self.doom_bilde = self.Load_image("Doomfist.png",(100,150)) # Doom
         self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
         self.doom_special = self.Load_image("doom_special.png",(150,200))
+        self.doom_attack_h = self.Load_image("doom_attack_høyre.png", (100, 50))
+        self.doom_attack_v = self.Load_image("doom_attack_venstre.png", (100, 50))
 
         self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150)) # Herman
         self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
         self.herman_special = self.Load_image("herman_special.png",(150,200))
+        self.herman_attack_h = self.Load_image("herman_attack_høyre.png", (100, 50))
+        self.herman_attack_v = self.Load_image("herman_attack_venstre.png", (100, 50))
 
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
@@ -256,11 +261,31 @@ class Player(GameObject):
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
 
         if self.melee_rect:
-            pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
-            screen.blit(self.birk_attack_arm,self.melee_rect)
+            if self.karakter == "herman":
+                if self.attack_retning == 1:
+                    screen.blit(self.herman_attack_h, self.melee_rect)
+                else:
+                    screen.blit(self.herman_attack_v, self.melee_rect)
+
+            if self.karakter == "doomfist":
+                if self.attack_retning == 1:
+                    screen.blit(self.doom_attack_h, self.melee_rect)
+                else:
+                    screen.blit(self.doom_attack_v, self.melee_rect)
+
+            if self.karakter == "birk":
+                if self.attack_retning == 1:
+                    screen.blit(self.birk_attack_arm, self.melee_rect)
+                else:
+                    screen.blit(self.birk_attack_arm_v, self.melee_rect)
+
+
+            #pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
+            
 
         if self.død == True:
             pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
+
         if self.herman_special_bool == True:
             pass
             #pygame.draw.rect(screen, (255,165, 0),)
