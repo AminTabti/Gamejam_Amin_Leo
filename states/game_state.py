@@ -62,8 +62,9 @@ class GameState(BaseState):
 
     def start_musikk(self):
         pygame.mixer.music.load("assets/battlefield_music.mp3")
-        pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.3)
+        pygame.mixer.music.play(-1)
+        
 
 
     def update(self, dt: float):
@@ -87,15 +88,25 @@ class GameState(BaseState):
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
-        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool_ned) and not self.player1.special_traff and not self.player2.invincibility:
+        if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool) and not self.player1.special_traff and not self.player2.invincibility:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 20
                 self.player2.knockback(self.player1.attack_retning, self.player2.hp)
                 self.player1.special_traff = True
 
-        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool or self.player2.herman_special_bool_ned) and not self.player2.special_traff and not self.player1.invincibility:
+        if (self.player2.birk_special_bool_ned or self.player2.doom_special_bool or self.player2.herman_special_bool) and not self.player2.special_traff and not self.player1.invincibility:
             if self.player2.rect.colliderect(self.player1.rect):
                 self.player1.hp += 20
+                self.player1.knockback(self.player2.attack_retning, self.player1.hp)
+                self.player2.special_traff = True
+        if self.player1.prosjektil_rect and not self.player1.special_traff and not self.player2.invincibility:
+            if self.player1.prosjektil_rect.colliderect(self.player2.rect):
+                self.player2.hp += 10
+                self.player2.knockback(self.player1.attack_retning, self.player2.hp)
+                self.player1.special_traff = True
+        if self.player2.prosjektil_rect and not self.player2.special_traff and not self.player1.invincibility:
+            if self.player2.prosjektil_rect.colliderect(self.player1.rect):
+                self.player1.hp += 10
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
                 self.player2.special_traff = True
 
@@ -168,11 +179,12 @@ class Player(GameObject):
         self.melee_traff = False
         self.knockback_siden = 0
         self.charge_timer = 0
+        self.prosjektil_rect = None
+
 
         self.special_traff = False
         self.special_cooldown = 0
         self.herman_special_bool = False # herman
-        self.herman_special_bool_ned = False
         self.doom_special_bool = False # Doom
         self.doom_special_bool_lyd = False
         
@@ -215,6 +227,7 @@ class Player(GameObject):
         self.herman_special = self.Load_image("herman_special.png",(150,200))
         self.herman_attack_h = self.Load_image("herman_attack_høyre.png", (100, 50))
         self.herman_attack_v = self.Load_image("herman_attack_venstre.png", (100, 50))
+        self.spytt = self.Load_image("Spytt.png",(30,20))
 
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
@@ -297,8 +310,9 @@ class Player(GameObject):
             pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
 
         if self.herman_special_bool == True:
-            pass
-            #pygame.draw.rect(screen, (255,165, 0),)
+            #pygame.draw.rect(screen, (255,165, 0),pygame.Rect(self.rect.x, self.rect.y, 500, 500))
+            if self.prosjektil_rect:
+                screen.blit(self.spytt, self.prosjektil_rect)
 
 
     def update(self):
@@ -350,10 +364,9 @@ class Player(GameObject):
                 self.special_cooldown = 100 
             
             elif self.karakter == "herman":
-                self.vy = -18
                 self.herman_special_bool = True
+                self.prosjektil_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 30, 20) # hjelp av claude**
                 self.timer = 80
-                self.på_bakken = False
                 self.special_cooldown = 100 
                 
         if keys[self.kontroller["special"]] and self.karakter == "doomfist" and self.special_cooldown <= 0:
@@ -381,13 +394,12 @@ class Player(GameObject):
 
             elif self.karakter == "herman":
                 self.herman_special_bool = False
-                self.herman_special_bool_ned = True
 
         if self.på_bakken == True:
             self.birk_special_bool_ned = False
             self.birk_special_bool_lyd = False
             #self.doom_special_bool = False
-            self.herman_special_bool = False     
+            #self.herman_special_bool = False     
          
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken. Denne blokken er Chat
@@ -425,7 +437,7 @@ class Player(GameObject):
                     self.antall_hopp = 0
                     self.birk_special_bool_ned = False
 
-                    self.herman_special_bool_ned = False
+                if self.karakter == "birk":
                     self.special_traff = False
 
                 elif self.vy < 0:
@@ -456,6 +468,13 @@ class Player(GameObject):
         if self.karakter == "herman":
             self.update_image_herman()
         
+        if self.prosjektil_rect:
+            self.prosjektil_rect.x += 12 * self.attack_retning
+            if self.timer == 0:
+                self.prosjektil_rect = None
+                self.special_traff = False
+        if self.karakter == "doomfist" and self.vx < 0.001:
+            self.special_traff = False
 
         if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
             self.død_x = self.rect.x
