@@ -72,12 +72,18 @@ class GameState(BaseState):
         
 
         if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and not self.player1.melee_traff and not self.player2.invincibility:
-            self.player2.hp += 5
+            if self.player1.karakter == "birk":
+                self.player2.hp += 8
+            else:
+                self.player2.hp += 5
             self.player2.knockback(self.player1.attack_retning, self.player2.hp)
             self.player1.melee_traff = True #<-- chat hjalp med hvordan treffe bare en gang
 
         if self.player2.melee_rect and self.player2.melee_rect.colliderect(self.player1.rect) and not self.player2.melee_traff and not self.player1.invincibility:
-            self.player1.hp += 5
+            if self.player2.karakter == "birk":
+                self.player1.hp += 8
+            else:
+                self.player1.hp += 5
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
@@ -225,8 +231,12 @@ class Player(GameObject):
                     self.antall_hopp += 1
 
             if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
-                self.attack_cooldown = 45
-                self.melee_attack_varer = 20
+                if self.karakter == "birk":
+                    self.attack_cooldown = 90
+                    self.melee_attack_varer = 20
+                else:
+                    self.attack_cooldown = 45
+                    self.melee_attack_varer = 20
             
             if event.key == self.kontroller["Dodge"] and self.dodge_cooldown <= 0 and self.knockback_siden == 0:
                 self.invincibility = True
@@ -326,7 +336,7 @@ class Player(GameObject):
                 self.melee_rect = pygame.Rect(self.rect.left - 100, self.rect.centery-70, 100, 25)
         else:
             self.melee_rect = None
-            self.melee_traff = False
+            self.melee_traff = False    
 
 
         if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
@@ -339,7 +349,6 @@ class Player(GameObject):
                 self.på_bakken = False
                 self.special_cooldown = 100 
             
-                
             elif self.karakter == "herman":
                 self.vy = -18
                 self.herman_special_bool = True
