@@ -463,8 +463,7 @@ class Player(GameObject):
             if self.timer == 0:
                 self.prosjektil_rect = None
                 self.special_traff = False
-        if self.karakter == "doomfist" and self.vx < 0.001:
-            self.special_traff = False
+        
  
         if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
             self.død_x = self.rect.x
@@ -548,7 +547,7 @@ class Player(GameObject):
 
     def update_lyd_Herman(self):
         pass
-class doomfist(Player):
+class Doomfist(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
         self.game = game
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
@@ -559,7 +558,54 @@ class doomfist(Player):
         self.attack_h = self.Load_image("doom_attack_høyre.png", (100, 50))
         self.attack_v = self.Load_image("doom_attack_venstre.png", (100, 50))
         
-    def update():
+    def update(self):
         super().update()
+        keys = pygame.key.get_pressed()
+        if self.vx < 0.001: # gjør at man kan treffe pånytt
+            self.special_traff = False
+
+        if keys[self.kontroller["special"]]  and self.special_cooldown <= 0:
+            self.charge_timer += 1
+            if self.charge_timer >= 60:
+                self.timer = 80
+                self.vx = 35
+                self.doom_special_bool = True
+                self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
+        else:
+            self.charge_timer = 0
+        self.update_image_doomfist()
+        self.update_lyd_doomfist()
+        if self.timer == 1:
+            self.doom_special_bool = False
+class Birk(Player):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
+        self.game = game
+        super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
+        self.birk_bilde = self.Load_image("Birk_bein.png",(150,200)) # Birk
+        self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
+        self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
+        self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
+        self.birk_attack = self.Load_image("attack_animation_Birk.png",(150,200))
+        self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100, 50))
+        self.birk_attack_arm_v = self.Load_image("Birk_attack_arm_v.png",(100, 50))
+    def update(self):
+        super().update()
+        keys = pygame.key.get_pressed()
+        if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
+            self.vy = -18                
+            self.birk_special_bool = True
+            self.timer = 80
+            self.på_bakken = False
+            self.special_cooldown = 100 
+    def handle_event(self, event):
+        super().handle_event(event)
+        if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
+                if self.karakter == "birk":
+                    self.attack_cooldown = 90
+                    self.melee_attack_varer = 20
+
         
+        
+                
+
 

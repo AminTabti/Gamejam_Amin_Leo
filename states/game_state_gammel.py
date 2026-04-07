@@ -1,7 +1,6 @@
 """
 
 Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc...
-
 import os
 from states.base_state import BaseState
 import pygame
