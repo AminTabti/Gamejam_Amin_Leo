@@ -33,11 +33,11 @@ class GameState(BaseState):
 
 #------------ Chat under-----------------------------------------------
         self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_b, "attack" : pygame.K_v, "attack": pygame.K_f, "Dodge" : pygame.K_SPACE}, 
+        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_c, "attack": pygame.K_x, "Dodge" : pygame.K_v}, 
         bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
 
         self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack" : pygame.K_m, "attack": pygame.K_k, "Dodge" : pygame.K_RCTRL}, 
+        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack": pygame.K_k, "Dodge" : pygame.K_m}, 
         bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
     #----------Chat over-----------------------------------
 
@@ -475,7 +475,7 @@ class Player(GameObject):
                 self.special_traff = False
         if self.karakter == "doomfist" and self.vx < 0.001:
             self.special_traff = False
-
+ 
         if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
             self.død_x = self.rect.x
             self.død_y = self.rect.y
