@@ -216,11 +216,7 @@ class Player(GameObject):
         self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100, 50))
         self.birk_attack_arm_v = self.Load_image("Birk_attack_arm_v.png",(100, 50))
 
-        self.doom_bilde = self.Load_image("Doomfist.png",(100,150)) # Doom
-        self.doom_hopp = self.Load_image("doomfist_hopp.png",(100,150))
-        self.doom_special = self.Load_image("doom_special.png",(150,200))
-        self.doom_attack_h = self.Load_image("doom_attack_høyre.png", (100, 50))
-        self.doom_attack_v = self.Load_image("doom_attack_venstre.png", (100, 50))
+        
 
         self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150)) # Herman
         self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
@@ -558,3 +554,168 @@ class Player(GameObject):
 
     def update_lyd_Herman(self):
         pass
+class doomfist(Player):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
+        self.game = game
+        super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
+        
+        self.bilde = self.Load_image("Doomfist.png",(100,150)) # Doom
+        self.hopp = self.Load_image("doomfist_hopp.png",(100,150))
+        self.special = self.Load_image("doom_special.png",(150,200))
+        self.attack_h = self.Load_image("doom_attack_høyre.png", (100, 50))
+        self.attack_v = self.Load_image("doom_attack_venstre.png", (100, 50))
+        
+        def update(self):
+            keys = pygame.key.get_pressed()
+
+            if keys[self.kontroller["left"]]: # chat
+                self.rect.x -= self.speed
+                self.attack_retning = -1
+            if keys[self.kontroller["right"]]: #chat
+                self.rect.x += self.speed
+                self.attack_retning = 1
+            
+            #knockback
+            self.rect.x += self.knockback_siden # Denne blokken er hovedsaklig Chat
+            self.knockback_siden *= 0.85
+            if abs(self.knockback_siden) < 0.3:
+                self.knockback_siden = 0
+
+            #dodge
+            if self.dodge_frames > 0:
+                self.dodge_frames -= 1
+            else:
+                self.invincibility = False
+
+
+            self.dodge_cooldown -= 1
+            self.attack_cooldown -= 1 #vet at den går til minus men det har ingenting å si
+
+
+            if self.melee_attack_varer > 0: #hvor lenge attacket varer, chatt
+                self.melee_attack_varer -= 1
+                if self.attack_retning == 1:
+                    self.melee_rect = pygame.Rect(self.rect.right, self.rect.centery-70, 100, 25)
+                else:
+                    self.melee_rect = pygame.Rect(self.rect.left - 100, self.rect.centery-70, 100, 25)
+            else:
+                self.melee_rect = None
+                self.melee_traff = False    
+
+
+            
+                    
+            if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
+                self.charge_timer += 1
+                if self.charge_timer >= 60:
+                    self.timer = 80
+                    self.vx = 35
+                    self.doom_special_bool = True
+                    self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
+            else:
+                self.charge_timer = 0
+
+            self.special_cooldown -= 1
+        
+
+            if self.timer == 1:
+                self.vy = 20
+
+                self.doom_special_bool = False
+
+            
+
+            for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken. Denne blokken er Chat
+                if self.rect.colliderect(platform):
+                    if self.rect.centerx < platform.left:
+                        self.rect.right = platform.left
+                    elif self.rect.centerx > platform.right:
+                        self.rect.left = platform.right
+
+
+            if keys[self.kontroller["down"]]:
+                if self.vy <= 0:
+                    self.vy = 0
+
+                else:
+                    self.rect.y += 5
+        
+
+            self.vy += 0.35
+
+
+            self.vx *= 0.93
+
+
+            self.rect.y += self.vy
+            self.rect.x += self.vx
+
+
+            for platform in [self.game.spill_bane1, self.game.spill_bane2]: # hjelp fra chat men skrevet selv
+                if self.rect.colliderect(platform):
+                    if self.vy >= 0:
+                        self.rect.bottom = platform.top
+                        self.vy = 0
+                        self.på_bakken = True
+                        self.antall_hopp = 0
+
+
+
+                    elif self.vy < 0:
+                        self.rect.top = platform.bottom
+                        self.vy = 0
+                        self.på_bakken = False
+
+
+            self.timer -= 1
+
+
+            if self.timer_død > 1:  # fikk hjep av claude, etter at jeg satt fast lenge med hvordan boksen skulle gå bort(og mer bla bla)
+                self.timer_død -= 1
+
+            else:
+                if self.død == True:       
+                    self.respawn()
+                self.død = False
+            
+                self.update_image_Birk()
+                self.update_lyd_Birk()
+
+                self.update_image_doomfist()
+                self.update_lyd_doomfist()
+
+            
+            if self.prosjektil_rect:
+                self.prosjektil_rect.x += 12 * self.attack_retning
+                if self.timer == 0:
+                    self.prosjektil_rect = None
+                    self.special_traff = False
+            if self.vx < 0.001:
+                self.special_traff = False
+    
+            if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
+                self.død_x = self.rect.x
+                self.død_y = self.rect.y
+
+            if self.rect.x > 1800 or self.rect.x < -500 or self.rect.y > 1100:
+                if self.død == False: # gjør at den bare kjører en gang
+                    self.promp.play()
+                    self.liv -= 1
+                    self.død = True
+                    self.timer_død = 120
+                
+                if self.liv <= 0:
+                    if self.game.player1 == self: # <--chat hjalp med denne linjen
+                        self.game.persist["vinner"] = self.game.player2.karakter
+                        self.game.next_state = "END"
+                        self.game.done = True
+                    else:
+                        self.game.persist["vinner"] = self.game.player1.karakter
+                        self.game.next_state = "END"
+                        self.game.done = True
+
+class Birk(Player):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
+        self.game = game
+        super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
+        
