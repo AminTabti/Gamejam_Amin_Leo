@@ -83,9 +83,9 @@ class SelectionState(BaseState):
 
     def draw(self, surface: pygame.Surface):
         surface.blit(self.bakgrunn, (0,0))
-        pygame.draw.rect(surface,(255,0,0), self.start_box, 2)
-        pygame.draw.rect(surface,(255,0,0), self.start_box2, 2)
-        pygame.draw.rect(surface,(255,0,0), self.start_box3, 2)
+        #pygame.draw.rect(surface,(255,0,0), self.start_box, 2)  #tegner hitboksene
+        #pygame.draw.rect(surface,(255,0,0), self.start_box2, 2)
+        #pygame.draw.rect(surface,(255,0,0), self.start_box3, 2)
         if self.selection_player1 == True:
             self.draw_text(surface, "PLAYER 2", self.font, (255,0, 0), (875, 60))
         else:
