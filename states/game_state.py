@@ -101,12 +101,12 @@ class GameState(BaseState):
                 self.player2.special_traff = True
         if self.player1.prosjektil_rect and not self.player1.special_traff and not self.player2.invincibility:
             if self.player1.prosjektil_rect.colliderect(self.player2.rect):
-                self.player2.hp += 10
+                self.player2.hp += 5
                 self.player2.knockback(self.player1.attack_retning, self.player2.hp)
                 self.player1.special_traff = True
         if self.player2.prosjektil_rect and not self.player2.special_traff and not self.player1.invincibility:
             if self.player2.prosjektil_rect.colliderect(self.player1.rect):
-                self.player1.hp += 10
+                self.player1.hp += 5
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
                 self.player2.special_traff = True
 
@@ -480,7 +480,7 @@ class Player(GameObject):
             self.død_x = self.rect.x
             self.død_y = self.rect.y
 
-        if self.rect.x > 1500 or self.rect.x < -200 or self.rect.y > 800:
+        if self.rect.x > 1800 or self.rect.x < -500 or self.rect.y > 1100:
             if self.død == False: # gjør at den bare kjører en gang
                 self.promp.play()
                 self.liv -= 1
