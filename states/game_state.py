@@ -88,6 +88,7 @@ class GameState(BaseState):
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
+
         if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool or self.player1.herman_special_bool) and not self.player1.special_traff and not self.player2.invincibility:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 20
@@ -99,6 +100,8 @@ class GameState(BaseState):
                 self.player1.hp += 20
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
                 self.player2.special_traff = True
+
+
         if self.player1.prosjektil_rect and not self.player1.special_traff and not self.player2.invincibility:
             if self.player1.prosjektil_rect.colliderect(self.player2.rect):
                 self.player2.hp += 5
@@ -179,7 +182,6 @@ class Player(GameObject):
         self.melee_traff = False
         self.knockback_siden = 0
         self.charge_timer = 0
-        self.prosjektil_rect = None
 
 
         self.special_traff = False
@@ -207,17 +209,6 @@ class Player(GameObject):
         #Bilder & Lyd
         self.bilde = pygame.image.load(bilde)
         self.bilde = pygame.transform.scale(self.bilde, (bredde, høyde))
-
-        
-
-        
-
-        self.herman_bilde = self.Load_image("Herman_karakter.png",(100,150)) # Herman
-        self.herman_hopp = self.Load_image("herman_hopp.png",(100,150))
-        self.herman_special = self.Load_image("herman_special.png",(150,200))
-        self.herman_attack_h = self.Load_image("herman_attack_høyre.png", (100, 50))
-        self.herman_attack_v = self.Load_image("herman_attack_venstre.png", (100, 50))
-        self.spytt = self.Load_image("Spytt.png",(30,20))
 
         self.promp = pygame.mixer.Sound("assets/promp.mp3")
         self.Birk_grunt = pygame.mixer.Sound("assets/Birk_hopp_lyd.wav")
@@ -577,6 +568,10 @@ class Doomfist(Player):
         self.update_lyd_doomfist()
         if self.timer == 1:
             self.doom_special_bool = False
+
+
+
+
 class Birk(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
         self.game = game
@@ -604,8 +599,28 @@ class Birk(Player):
                     self.attack_cooldown = 90
                     self.melee_attack_varer = 20
 
-        
-        
-                
 
 
+class Herman(Player):
+    def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
+        self.game = game
+        super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
+
+        self.bilde = self.Load_image("Herman_karakter.png",(100,150)) # Herman
+        self.hopp = self.Load_image("herman_hopp.png",(100,150))
+        self.special = self.Load_image("herman_special.png",(150,200))
+        self.attack_h = self.Load_image("herman_attack_høyre.png", (100, 50))
+        self.attack_v = self.Load_image("herman_attack_venstre.png", (100, 50))
+        self.spytt = self.Load_image("Spytt.png",(30,20))
+
+        self.prosjektil_rect = None
+        
+    def update(self):
+        super().update()
+        keys = pygame.key.get_pressed()
+
+        if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
+                self.herman_special_bool = True
+                self.prosjektil_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 30, 20) # hjelp av claude**
+                self.timer = 80
+                self.special_cooldown = 100 
