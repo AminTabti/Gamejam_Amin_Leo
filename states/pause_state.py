@@ -1,5 +1,7 @@
 """
 Dette er staten for hovedmenyen.
+
+denne staten funker som en restart til game state.
 """
 
 from states.base_state import BaseState
