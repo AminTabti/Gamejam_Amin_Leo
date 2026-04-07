@@ -568,6 +568,13 @@ class Doomfist(Player):
         self.update_lyd_doomfist()
         if self.timer == 1:
             self.doom_special_bool = False
+        
+        if self.doom_special_bool == True:
+            self.bilde = self.special
+        elif self.på_bakken == False:
+            self.bilde = self.hopp
+        else:
+            self.bilde = self.bilde_h
 
 
 
@@ -597,11 +604,23 @@ class Birk(Player):
 
             self.birk_special_bool = False
             self.birk_special_bool_ned = True
-
+        
+        if self.birk_special_bool == True and self.birk_special_bool_lyd == False:
+            self.Birk_grunt.play()
+            self.birk_special_bool_lyd = True
 
         if self.på_bakken == True:
             self.birk_special_bool_ned = False
             self.birk_special_bool_lyd = False
+       
+        if self.birk_special_bool == True:
+            self.bilde = self.special
+        if self.birk_special_bool_ned == True:
+            self.bilde = self.special_ned
+        elif self.på_bakken == False:
+            self.bilde = self.hopp
+        else:
+            self.bilde = self.bilde_h
     def handle_event(self, event):
         super().handle_event(event)
         if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
@@ -636,3 +655,21 @@ class Herman(Player):
                 self.prosjektil_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 30, 20) # hjelp av claude**
                 self.timer = 80
                 self.special_cooldown = 100 
+        if self.prosjektil_rect:
+            self.prosjektil_rect.x += 12 * self.attack_retning
+            if self.timer == 0:
+                self.prosjektil_rect = None
+                self.special_traff = False
+ 
+        if self.timer == 1:
+            self.herman_special_bool = False
+        
+        if self.timer == 1:
+            self.herman_special_bool = False
+       
+        if self.herman_special_bool == True:
+            self.bilde = self.special
+        elif self.på_bakken == False:
+            self.bilde = self.hopp
+        else:
+            self.bilde = self.bilde_h
