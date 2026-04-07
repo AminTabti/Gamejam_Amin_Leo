@@ -32,13 +32,14 @@ class GameState(BaseState):
         self.hp_bar_font = pygame.font.SysFont("Times new roman", 80, bold = True)
 
 #------------ Chat under-----------------------------------------------
-        self.player1 = Player(300, 200, self, kontroller={
-        "left": pygame.K_a, "right": pygame.K_d, "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_c, "attack": pygame.K_x, "Dodge" : pygame.K_v}, 
-        bilde=bilde1, bredde=bredde1, høyde=høyde1, navn = ".", farge = (30, 60, 200), karakter = karakter1)
+        self.player1 = self.lag_spiller( karakter1, 300, 200, self, { "left": pygame.K_a, "right": pygame.K_d,
+            "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_c, "attack": pygame.K_x, "Dodge": pygame.K_v},
+            bilde1, bredde1, høyde1, ".", (30,60,200), karakter1)
+ 
+        self.player2 = self.lag_spiller(karakter2, 800, 200, self, {"left": pygame.K_LEFT, "right": pygame.K_RIGHT,
+            "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack": pygame.K_k, "Dodge": pygame.K_m},
+            bilde2, bredde2, høyde2, ".", (255,0,0), karakter2)
 
-        self.player2 = Player(800, 200, self, kontroller={
-        "left": pygame.K_LEFT, "right": pygame.K_RIGHT, "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack": pygame.K_k, "Dodge" : pygame.K_m}, 
-        bilde=bilde2, bredde=bredde2, høyde=høyde2, navn = ".", farge = (255, 0, 0), karakter = karakter2)
     #----------Chat over-----------------------------------
 
 
@@ -225,10 +226,6 @@ class Player(GameObject):
                     self.antall_hopp += 1
 
             if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
-                if self.karakter == "birk":
-                    self.attack_cooldown = 90
-                    self.melee_attack_varer = 20
-                else:
                     self.attack_cooldown = 45
                     self.melee_attack_varer = 20
             
@@ -264,25 +261,6 @@ class Player(GameObject):
         tekst = self.font.render(self.navn, True, self.farge)
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 185)) # chat
 
-        if self.melee_rect:
-            if self.karakter == "herman":
-                if self.attack_retning == 1:
-                    screen.blit(self.herman_attack_h, self.melee_rect)
-                else:
-                    screen.blit(self.herman_attack_v, self.melee_rect)
-
-            if self.karakter == "doomfist":
-                if self.attack_retning == 1:
-                    screen.blit(self.doom_attack_h, self.melee_rect)
-                else:
-                    screen.blit(self.doom_attack_v, self.melee_rect)
-
-            if self.karakter == "birk":
-                if self.attack_retning == 1:
-                    screen.blit(self.birk_attack_arm, self.melee_rect)
-                else:
-                    screen.blit(self.birk_attack_arm_v, self.melee_rect)
-
 
             #pygame.draw.rect(screen, (255, 165, 0), self.melee_rect)
             
@@ -290,10 +268,7 @@ class Player(GameObject):
         if self.død == True:
             pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 1000, 1000))
 
-        if self.herman_special_bool == True:
-            #pygame.draw.rect(screen, (255,165, 0),pygame.Rect(self.rect.x, self.rect.y, 500, 500))
-            if self.prosjektil_rect:
-                screen.blit(self.spytt, self.prosjektil_rect)
+
 
 
     def update(self):
@@ -334,31 +309,7 @@ class Player(GameObject):
             self.melee_traff = False    
 
 
-        if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
-             # mellom 6 og 7 sekunder :) XD
 
-            if self.karakter == "birk":
-                self.vy = -18                
-                self.birk_special_bool = True
-                self.timer = 80
-                self.på_bakken = False
-                self.special_cooldown = 100 
-            
-            elif self.karakter == "herman":
-                self.herman_special_bool = True
-                self.prosjektil_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 30, 20) # hjelp av claude**
-                self.timer = 80
-                self.special_cooldown = 100 
-                
-        if keys[self.kontroller["special"]] and self.karakter == "doomfist" and self.special_cooldown <= 0:
-            self.charge_timer += 1
-            if self.charge_timer >= 60:
-                self.timer = 80
-                self.vx = 35
-                self.doom_special_bool = True
-                self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
-        else:
-            self.charge_timer = 0
 
         self.special_cooldown -= 1
        
@@ -366,21 +317,7 @@ class Player(GameObject):
         if self.timer == 1:
             self.vy = 20
 
-            if self.karakter == "birk":
-                self.birk_special_bool = False
-                self.birk_special_bool_ned = True
-
-            elif self.karakter == "doomfist":
-                self.doom_special_bool = False
-
-            elif self.karakter == "herman":
-                self.herman_special_bool = False
-
-        if self.på_bakken == True:
-            self.birk_special_bool_ned = False
-            self.birk_special_bool_lyd = False
-            #self.doom_special_bool = False
-            #self.herman_special_bool = False     
+               
          
 
         for platform in [self.game.spill_bane1, self.game.spill_bane2]: #Horizontal sjekken. Denne blokken er Chat
@@ -449,11 +386,6 @@ class Player(GameObject):
         if self.karakter == "herman":
             self.update_image_herman()
         
-        if self.prosjektil_rect:
-            self.prosjektil_rect.x += 12 * self.attack_retning
-            if self.timer == 0:
-                self.prosjektil_rect = None
-                self.special_traff = False
         
  
         if self.rect.x > 0 and self.rect.x < 1295 and self.rect.y < 695:
@@ -583,13 +515,13 @@ class Birk(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
         self.game = game
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
-        self.birk_bilde = self.Load_image("Birk_bein.png",(150,200)) # Birk
+        self.bilde_b = self.Load_image("Birk_bein.png",(150,200)) # Birk
         self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
-        self.birk_special = self.Load_image("Birk_slam_opp.png",(150,200))
-        self.birk_special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
-        self.birk_attack = self.Load_image("attack_animation_Birk.png",(150,200))
-        self.birk_attack_arm = self.Load_image("Birk_attack_arm.png",(100, 50))
-        self.birk_attack_arm_v = self.Load_image("Birk_attack_arm_v.png",(100, 50))
+        self.special = self.Load_image("Birk_slam_opp.png",(150,200))
+        self.special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
+        self.attack = self.Load_image("attack_animation_Birk.png",(150,200))
+        self.attack_arm = self.Load_image("Birk_attack_arm.png",(100, 50))
+        self.attack_arm_v = self.Load_image("Birk_attack_arm_v.png",(100, 50))
     def update(self):
         super().update()
         keys = pygame.key.get_pressed()
@@ -620,7 +552,7 @@ class Birk(Player):
         elif self.på_bakken == False:
             self.bilde = self.hopp
         else:
-            self.bilde = self.bilde_h
+            self.bilde = self.bilde_b
     def handle_event(self, event):
         super().handle_event(event)
         if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
@@ -637,7 +569,7 @@ class Herman(Player):
         self.game = game
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
 
-        self.bilde = self.Load_image("Herman_karakter.png",(100,150)) # Herman
+        self.bilde_h = self.Load_image("Herman_karakter.png",(100,150)) # Herman
         self.hopp = self.Load_image("herman_hopp.png",(100,150))
         self.special = self.Load_image("herman_special.png",(150,200))
         self.attack_h = self.Load_image("herman_attack_høyre.png", (100, 50))
