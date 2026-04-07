@@ -31,7 +31,7 @@ class GameState(BaseState):
 
         self.hp_bar_font = pygame.font.SysFont("Times new roman", 80, bold = True)
 
-#------------ Chat under-----------------------------------------------
+#------------ Hovedsakelig chat-----------------------------------------------
         self.player1 = self.lag_spiller( karakter1, 300, 200, self, { "left": pygame.K_a, "right": pygame.K_d,
             "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_c, "attack": pygame.K_x, "Dodge": pygame.K_v},
             bilde1, bredde1, høyde1, ".", (30,60,200), karakter1)
@@ -40,8 +40,17 @@ class GameState(BaseState):
             "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_l, "attack": pygame.K_k, "Dodge": pygame.K_m},
             bilde2, bredde2, høyde2, ".", (255,0,0), karakter2)
 
-    #----------Chat over-----------------------------------
+    
+   
 
+    def lag_spiller(self, karakter, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter_id):
+        if karakter == "birk":
+            return Birk(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter_id)
+        elif karakter == "doomfist":
+            return Doomfist(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter_id)
+        elif karakter == "herman":
+            return Herman(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter_id)
+    #----------Hovedsakelig Chat -----------------------------------
 
     def handle_events(self, events : list[pygame.event.Event]):
         for event in events:
@@ -184,10 +193,10 @@ class Player(GameObject):
         self.knockback_siden = 0
         self.charge_timer = 0
 
-
         self.special_traff = False
         self.special_cooldown = 0
         self.herman_special_bool = False # herman
+        self.prosjektil_rect = None
         self.doom_special_bool = False # Doom
         self.doom_special_bool_lyd = False
         
@@ -375,16 +384,7 @@ class Player(GameObject):
                 self.respawn()
             self.død = False
         
-        if self.karakter == "birk":
-            self.update_image_Birk()
-            self.update_lyd_Birk()
 
-        if self.karakter == "doomfist":
-            self.update_image_doomfist()
-            self.update_lyd_doomfist()
-
-        if self.karakter == "herman":
-            self.update_image_herman()
         
         
  
@@ -419,43 +419,7 @@ class Player(GameObject):
         return image
     
 
-    def update_image_Birk(self):
-        if self.på_bakken == False:
-           self.bilde = self.birk_hopp
 
-        if self.birk_special_bool == True:
-            self.bilde = self.birk_special
-
-        if self.birk_special_bool_ned == True:
-            self.bilde = self.birk_special_ned
-
-        if self.på_bakken == True:
-            self.bilde = self.birk_bilde
-
-        if self.melee_attack_varer > 0:
-            self.bilde = self.birk_attack
-    
-
-    def update_image_doomfist(self):
-        if self.på_bakken == False:
-           self.bilde = self.doom_hopp
-
-        if self.doom_special_bool == True:
-            self.bilde = self.doom_special
-
-        if self.på_bakken == True and self.doom_special_bool == False:
-            self.bilde = self.doom_bilde
-    
-
-    def update_image_herman(self):
-        if self.på_bakken == False:
-           self.bilde = self.herman_hopp
-
-        if self.herman_special_bool == True:
-            self.bilde = self.herman_special
-
-        if self.på_bakken == True:
-            self.bilde = self.herman_bilde
 
 
     def update_lyd_Birk(self):
@@ -475,7 +439,7 @@ class Doomfist(Player):
         self.game = game
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
         
-        self.bilde = self.Load_image("Doomfist.png",(100,150)) # Doom
+        self.bilde_d = self.Load_image("Doomfist.png",(100,150)) # Doom
         self.hopp = self.Load_image("doomfist_hopp.png",(100,150))
         self.special = self.Load_image("doom_special.png",(150,200))
         self.attack_h = self.Load_image("doom_attack_høyre.png", (100, 50))
@@ -496,8 +460,6 @@ class Doomfist(Player):
                 self.special_cooldown = 100  # mellom 6 og 7 sekunder :) XD
         else:
             self.charge_timer = 0
-        self.update_image_doomfist()
-        self.update_lyd_doomfist()
         if self.timer == 1:
             self.doom_special_bool = False
         
@@ -506,7 +468,7 @@ class Doomfist(Player):
         elif self.på_bakken == False:
             self.bilde = self.hopp
         else:
-            self.bilde = self.bilde_h
+            self.bilde = self.bilde_d
 
 
 
@@ -516,7 +478,7 @@ class Birk(Player):
         self.game = game
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
         self.bilde_b = self.Load_image("Birk_bein.png",(150,200)) # Birk
-        self.birk_hopp = self.Load_image("Birk_hopp.png",(150,200))
+        self.hopp = self.Load_image("Birk_hopp.png",(150,200))
         self.special = self.Load_image("Birk_slam_opp.png",(150,200))
         self.special_ned = self.Load_image("Birk_slam_ned.png",(200,200))
         self.attack = self.Load_image("attack_animation_Birk.png",(150,200))
@@ -555,11 +517,11 @@ class Birk(Player):
             self.bilde = self.bilde_b
     def handle_event(self, event):
         super().handle_event(event)
-        if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
-                if self.karakter == "birk":
-                    self.attack_cooldown = 90
-                    self.melee_attack_varer = 20
-        
+        if event.type == pygame.KEYDOWN:
+            if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
+                self.attack_cooldown = 90
+                self.melee_attack_varer = 20
+            
 
 
 
@@ -576,7 +538,7 @@ class Herman(Player):
         self.attack_v = self.Load_image("herman_attack_venstre.png", (100, 50))
         self.spytt = self.Load_image("Spytt.png",(30,20))
 
-        self.prosjektil_rect = None
+        
         
     def update(self):
         super().update()
