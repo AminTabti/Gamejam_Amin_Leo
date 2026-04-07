@@ -597,12 +597,24 @@ class Birk(Player):
             self.timer = 80
             self.på_bakken = False
             self.special_cooldown = 100 
+        if self.timer == 1:
+            self.vy = 20
+
+            self.birk_special_bool = False
+            self.birk_special_bool_ned = True
+
+
+        if self.på_bakken == True:
+            self.birk_special_bool_ned = False
+            self.birk_special_bool_lyd = False
     def handle_event(self, event):
         super().handle_event(event)
         if event.key == self.kontroller["attack"] and self.attack_cooldown <= 0:
                 if self.karakter == "birk":
                     self.attack_cooldown = 90
                     self.melee_attack_varer = 20
+        
+
 
         
         
