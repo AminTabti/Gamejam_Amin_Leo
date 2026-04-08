@@ -288,9 +288,9 @@ class Player(GameObject):
         tekst = self.font.render(self.navn, True, self.farge)
         screen.blit(tekst, (self.rect.centerx - tekst.get_width() // 2, self.rect.top - 55)) # chat
 
-        # Døds animasjon på en måte
-        if self.død == True:
-            pygame.draw.rect(screen, (255, 165, 0), pygame.Rect(self.død_x, self.død_y, 200, 200))
+        # Døds animasjon på en måte - funka litt dårlig så kommenterte bort
+        #if self.død == True:
+            #pygame.draw.rect(screen, (235, 165, 20), pygame.Rect(self.død_x, self.død_y, 200, 200))
 
 
     def update(self):
