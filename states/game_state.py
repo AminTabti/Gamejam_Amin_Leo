@@ -92,7 +92,7 @@ class GameState(BaseState):
         self.player1.update()
         self.player2.update()
         
-
+        # Melee attack
         if self.player1.melee_rect and self.player1.melee_rect.colliderect(self.player2.rect) and self.player1.melee_traff == False and self.player2.invincibility == False:
             if self.player1.karakter == "birk":
                 self.player2.hp += 8
@@ -109,7 +109,7 @@ class GameState(BaseState):
             self.player1.knockback(self.player2.attack_retning, self.player1.hp)
             self.player2.melee_traff = True
 
-
+        # Special attack (Birk og doom)
         if (self.player1.birk_special_bool_ned or self.player1.doom_special_bool) and self.player1.special_traff == False and self.player2.invincibility == False:
             if self.player1.rect.colliderect(self.player2.rect):
                 self.player2.hp += 14
@@ -122,7 +122,7 @@ class GameState(BaseState):
                 self.player1.knockback(self.player2.attack_retning, self.player1.hp)
                 self.player2.special_traff = True
 
-
+        # Special attack (Herman)
         if self.player1.prosjektil_rect and self.player1.special_traff == False and self.player2.invincibility == False:
             if self.player1.prosjektil_rect.colliderect(self.player2.rect):
                 self.player2.hp += 5
@@ -140,6 +140,7 @@ class GameState(BaseState):
         #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane1, 2) # tegner spill bane hitboksen
         #pygame.draw.rect(surface, (255, 0, 0), self.spill_bane2, 2)
 
+        #tegner karakterene
         self.player1.draw(surface)
         self.player2.draw(surface)
 
@@ -160,11 +161,9 @@ class GameObject:
         self.rect = pygame.Rect(x, y, bredde, høyde)
         self.x = x
         self.y = y
-
-
+        
     def update(self):
         pass
-
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.rect)
