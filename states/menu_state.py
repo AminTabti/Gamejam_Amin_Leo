@@ -9,7 +9,7 @@ from random import randint
 class MenuState(BaseState):
     def __init__(self):
         super().__init__()
-        self.bakrund_load =  pygame.image.load("assets/main_menu_bilde.png").convert()
+        self.bakrund_load =  pygame.image.load("assets/bilder/main_menu_bilde.png").convert()
         self.screen = pygame.display.set_mode((0, 0),pygame.RESIZABLE)
         self.bakrund = pygame.transform.scale(self.bakrund_load, (1370, 700))
         self.start_box = pygame.Rect(0, 62, 670, 343) #x, y, bredde 590, høyde
@@ -18,11 +18,11 @@ class MenuState(BaseState):
         a1 = randint(1,5)
 
         if a1 <= 2:
-            pygame.mixer.music.load("assets/menu_music1.mp3")
+            pygame.mixer.music.load("assets/lyder/menu_music1.mp3")
         elif a1 <= 4:
-            pygame.mixer.music.load("assets/menu_music2.mp3")
+            pygame.mixer.music.load("assets/lyder/menu_music2.mp3")
         else:
-            pygame.mixer.music.load("assets/menu_music3.mp3")
+            pygame.mixer.music.load("assets/lyder/menu_music3.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
     

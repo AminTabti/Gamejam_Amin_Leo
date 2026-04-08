@@ -1,4 +1,6 @@
 """
+dette er den originale koden vår før vi tilpasset den til å bruke klasser for karakterene
+
 
 Dette er staten for spillet. Det er her du legger til Spillobjekter, logikk, etc...
 import os

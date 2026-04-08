@@ -12,7 +12,7 @@ class SelectionState(BaseState):
         self.valgtBirk = False
         self.valgtHerman = False
         self.valgtDoomfist = False
-        self.bakgrunn_load = pygame.image.load("assets/karakter_valg.png").convert()
+        self.bakgrunn_load = pygame.image.load("assets/bilder/karakter_valg.png").convert()
         self.bakgrunn = pygame.transform.scale(self.bakgrunn_load, (1300, 700))
         self.start_box = pygame.Rect(80, 60, 360, 545)
         self.start_box2 = pygame.Rect(450, 60, 390, 545) #x, y, bredde, høyde
@@ -21,16 +21,16 @@ class SelectionState(BaseState):
         self.valg_player1 = None # for å lagre valg til p1
 
 #Lyder her_____________________________________________________________________
-        self.feit_latter = pygame.mixer.Sound("assets/feit_latter.wav")
-        self.rap = pygame.mixer.Sound("assets/RAP.mp3")
-        self.promp = pygame.mixer.Sound("assets/promp.mp3")
-        self.doom_v1 = pygame.mixer.Sound("assets/doom_voice1.mp3")
-        self.herman_v1 = pygame.mixer.Sound("assets/herman_voice1.mp3")
+        self.feit_latter = pygame.mixer.Sound("assets/lyder/feit_latter.wav")
+        self.rap = pygame.mixer.Sound("assets/lyder/RAP.mp3")
+        self.promp = pygame.mixer.Sound("assets/lyder/promp.mp3")
+        self.doom_v1 = pygame.mixer.Sound("assets/lyder/doom_voice1.mp3")
+        self.herman_v1 = pygame.mixer.Sound("assets/lyder/herman_voice1.mp3")
 #________________________________________________________________________________
 
     def start_musikk(self):
-        pygame.mixer.Sound("assets/click_menu.mp3").play()
-        pygame.mixer.music.load("assets/Selection_music.mp3")
+        pygame.mixer.Sound("assets/lyder/click_menu.mp3").play()
+        pygame.mixer.music.load("assets/lyder/Selection_music.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.1)
     

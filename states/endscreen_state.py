@@ -13,9 +13,9 @@ class EndState(BaseState):
         self.persist = persistent
 
         vinner_bilder = {
-            "herman": ("assets/herman_vinner.png"),
-            "doomfist": ("assets/doomfist_vinner.png"),
-            "birk":  ("assets/birk_vinner.png"),
+            "herman": ("assets/bilder/herman_vinner.png"),
+            "doomfist": ("assets/bilder/doomfist_vinner.png"),
+            "birk":  ("assets/bilder/birk_vinner.png"),
             }
         
         vinner = persistent.get("vinner", "birk")
@@ -25,7 +25,7 @@ class EndState(BaseState):
         
 
     def start_musikk(self):
-        pygame.mixer.music.load("assets/Birk_theme.mp3")
+        pygame.mixer.music.load("assets/lyder/Birk_theme.mp3")
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.2)
     
