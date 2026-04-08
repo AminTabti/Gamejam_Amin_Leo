@@ -1,5 +1,4 @@
 """
-Dette er staten for hovedmenyen.
 
 denne staten funker som en restart til game state.
 """
@@ -7,7 +6,7 @@ denne staten funker som en restart til game state.
 from states.base_state import BaseState
 import pygame
 
-class PauseState(BaseState):
+class ResetState(BaseState):
     def __init__(self):
         super().__init__()
         self.bakrund_load =  pygame.image.load("assets/bilder/Pause_bakrund.png").convert()

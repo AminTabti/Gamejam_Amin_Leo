@@ -6,7 +6,7 @@ import pygame
 from states.base_state import BaseState
 from states.menu_state import MenuState
 from states.game_state import GameState
-from states.pause_state import PauseState
+from states.reset_state import ResetState
 from states.endscreen_state import EndState
 from states.karakter_valg_state import SelectionState
 
@@ -20,7 +20,7 @@ class Spill:
         self.states = {
             "MENU": MenuState(),
             "GAME": GameState(),
-            "PAUSE": PauseState(),
+            "PAUSE": ResetState(),
             "SELECTION": SelectionState(),
             "END": EndState()
         }

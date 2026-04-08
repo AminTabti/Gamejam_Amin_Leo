@@ -168,7 +168,7 @@ class Player(GameObject):
         self.farge = farge
         self.font = pygame.font.SysFont("Times new roman", 60, bold = True)
         self.karakter = karakter
-        self.timer = 10000000  # fikk påmåte ideen fra chat, men brukte den på en annen måte
+        self.timer = 0  # fikk påmåte ideen fra chat, men brukte den på en annen måte
 
         # bevegelse
         self.speed = 7
@@ -363,7 +363,8 @@ class Player(GameObject):
                     self.på_bakken = False
 
         # Teller ned timer
-        self.timer -= 1
+        if self.timer > 0:
+            self.timer -= 1
 
         if self.timer_død > 1:  # fikk hjep av claude, etter at jeg satt fast lenge med hvordan boksen skulle gå bort(og mer bla bla)
             self.timer_død -= 1
@@ -432,9 +433,9 @@ class Doomfist(Player):
         else:
             self.charge_timer = 0
 
-        if self.timer == 0:
+        if self.timer == 1:
             self.vx = 0
-        elif self.timer < 0:
+        elif self.timer < 1:
             self.doom_special_bool = False
             self.special_traff = False
         
@@ -550,11 +551,11 @@ class Herman(Player):
 
         if self.prosjektil_rect:
             self.prosjektil_rect.x += 12 * self.attack_retning
-            if self.timer == 0:
+            if self.timer == 1:
                 self.prosjektil_rect = None
                 self.special_traff = False
  
-        elif self.timer <= 0:
+        elif self.timer <= 1:
             self.herman_special_bool = False
             self.special_traff = False
        
