@@ -39,6 +39,10 @@ class EndState(BaseState):
                     self.next_state = "GAME"
                     self.done = True
 
+                if event.key == pygame.K_ESCAPE:
+                    self.next_state = "MENU"
+                    self.done = True
+
     def update(self, dt: float):
         pass
 

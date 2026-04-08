@@ -42,6 +42,11 @@ class SelectionState(BaseState):
             if event.type == pygame.QUIT:
                 self.next_state = None
                 self.done = True
+                
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    self.next_state = "MENU"
+                    self.done = True
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
