@@ -32,12 +32,24 @@ class GameState(BaseState):
         self.hp_bar_font = pygame.font.SysFont("Times new roman", 80, bold = True)
 
 #------------ Hovedsakelig chat-----------------------------------------------
-        self.player1 = self.lag_spiller( karakter1, 300, 200, self, { "left": pygame.K_a, "right": pygame.K_d,
-            "up": pygame.K_w, "down": pygame.K_s, "special": pygame.K_x, "attack": pygame.K_v, "Dodge": pygame.K_SPACE},
+        self.player1 = self.lag_spiller( karakter1, 300, 200, self, { 
+            "left": pygame.K_a, 
+            "right": pygame.K_d,
+            "up": pygame.K_w, 
+            "down": pygame.K_s, 
+            "special": pygame.K_c, 
+            "attack": pygame.K_v, 
+            "Dodge": pygame.K_LSHIFT},
             bilde1, bredde1, høyde1, "P1", (32,63,200), karakter1)
  
-        self.player2 = self.lag_spiller(karakter2, 800, 200, self, {"left": pygame.K_LEFT, "right": pygame.K_RIGHT,
-            "up": pygame.K_UP, "down": pygame.K_DOWN, "special": pygame.K_j, "attack": pygame.K_l, "Dodge": pygame.K_RALT},
+        self.player2 = self.lag_spiller(karakter2, 800, 200, self, {
+            "left": pygame.K_LEFT, 
+            "right": pygame.K_RIGHT,
+            "up": pygame.K_UP, 
+            "down": pygame.K_DOWN, 
+            "special": pygame.K_k, 
+            "attack": pygame.K_l, 
+            "Dodge": pygame.K_RCTRL},
             bilde2, bredde2, høyde2, "P2", (255,0,0), karakter2)
 
 
@@ -406,7 +418,7 @@ class Player(GameObject):
 
 class Doomfist(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
-        self.game = game
+        
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
         
         self.bilde_d = self.Load_image("Doomfist.png",(100,150)) # Doom
@@ -462,7 +474,7 @@ class Doomfist(Player):
 
 class Birk(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
-        self.game = game
+        
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
 
         self.bilde_b = self.Load_image("Birk_bein.png",(150,200)) # Birk
@@ -525,7 +537,7 @@ class Birk(Player):
 
 class Herman(Player):
     def __init__(self, x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter):
-        self.game = game
+        
         super().__init__(x, y, game, kontroller, bilde, bredde, høyde, navn, farge, karakter)
 
         self.bilde_h = self.Load_image("Herman_karakter.png",(100,150)) # Herman
@@ -536,21 +548,23 @@ class Herman(Player):
         self.spytt = self.Load_image("Spytt.png",(30,20))
         self.herman_special_bool = False
         self.prosjektil_rect = None
+        self.prosjektil_retning = 1
 
         
     def update(self):
         super().update()
         keys = pygame.key.get_pressed()
 
-        # Special attack (Spytter ut en projectile som kan styres med retningen han går (2.5 sek cooldown))
+        # Special attack (Spytter ut en projectile som følger en horisontal retning (2.5 sek cooldown))
         if keys[self.kontroller["special"]] and self.special_cooldown <= 0:
                 self.herman_special_bool = True
+                self.prosjektil_retning = self.attack_retning
                 self.prosjektil_rect = pygame.Rect(self.rect.centerx, self.rect.centery, 30, 20) # hjelp av claude**
                 self.timer = 70
                 self.special_cooldown = 150
 
         if self.prosjektil_rect:
-            self.prosjektil_rect.x += 12 * self.attack_retning
+            self.prosjektil_rect.x += 12 * self.prosjektil_retning
             if self.timer == 1:
                 self.prosjektil_rect = None
                 self.special_traff = False
